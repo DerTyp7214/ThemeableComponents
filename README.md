@@ -20,5 +20,7 @@ In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 Functions:
 
 `List<Component> : themeManager.getComponents()` gets all Components
+
 `List<Component> : themeManager.getComponents(this)` gets all Components from this Activity
+
 `List<Component> : themeManager.filterComponents(List<Component>, ThemeManager.Component.TYPE)` filters the Components by Type
