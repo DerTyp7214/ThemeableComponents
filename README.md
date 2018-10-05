@@ -1,6 +1,6 @@
 # ThemeableComponents
 
-List of ThemeableComponents:
+### List of ThemeableComponents:
 
 `com.dertyp7214.themeablecomponents.components.ThemeableButton`
 `com.dertyp7214.themeablecomponents.components.ThemeableCheckBox`
@@ -17,7 +17,7 @@ use them like the normal ones.
 
 In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 
-Functions:
+### Functions:
 
 `List<Component> : themeManager.getComponents()` gets all Components
 
