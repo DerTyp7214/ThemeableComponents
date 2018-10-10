@@ -49,6 +49,11 @@ public class ThemeableSeekBar extends AppCompatSeekBar {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.SEEKBAR;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

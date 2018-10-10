@@ -48,6 +48,11 @@ public class ThemeableProgressBar extends ProgressBar {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.PROGRESSBAR;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

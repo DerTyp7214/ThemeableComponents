@@ -47,6 +47,11 @@ public class ThemeableEditText extends com.google.android.material.textfield.Tex
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.EDITTEXT;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

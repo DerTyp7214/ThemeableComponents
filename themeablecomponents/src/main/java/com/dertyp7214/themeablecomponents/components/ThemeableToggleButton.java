@@ -51,6 +51,11 @@ public class ThemeableToggleButton extends ToggleButton {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.TOGGLEBUTTON;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

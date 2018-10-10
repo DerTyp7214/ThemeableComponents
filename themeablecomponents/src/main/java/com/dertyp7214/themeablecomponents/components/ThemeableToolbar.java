@@ -61,22 +61,31 @@ public class ThemeableToolbar extends Toolbar {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.TOOLBAR;
             }
+
+            @Override
+            public boolean accent() {
+                return false;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }
 
     private void applyTheme(Theme theme, boolean animated) {
         if (animated) {
-            ValueAnimator animator = ValueAnimator
-                    .ofObject(new ArgbEvaluator(),
-                            Objects.requireNonNull(getBackgroundTintList()).getDefaultColor(),
-                            theme.getColor());
-            animator.setDuration(ThemeManager.getDuration());
-            animator.addUpdateListener(animation -> {
-                int color = (int) animation.getAnimatedValue();
-                setToolbarColor(color);
-            });
-            animator.start();
+            try {
+                ValueAnimator animator = ValueAnimator
+                        .ofObject(new ArgbEvaluator(),
+                                Objects.requireNonNull(getBackgroundTintList()).getDefaultColor(),
+                                theme.getColor());
+                animator.setDuration(ThemeManager.getDuration());
+                animator.addUpdateListener(animation -> {
+                    int color = (int) animation.getAnimatedValue();
+                    setToolbarColor(color);
+                });
+                animator.start();
+            } catch (Exception ignored) {
+                setToolbarColor(theme.getColor());
+            }
         } else {
             setToolbarColor(theme.getColor());
         }

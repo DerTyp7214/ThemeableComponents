@@ -50,6 +50,11 @@ public class ThemeableCheckBox extends AppCompatCheckBox {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.CHECKBOX;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

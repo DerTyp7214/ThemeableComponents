@@ -50,6 +50,11 @@ public class ThemeableRadioButton extends AppCompatRadioButton {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.RADIOBUTTON;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }

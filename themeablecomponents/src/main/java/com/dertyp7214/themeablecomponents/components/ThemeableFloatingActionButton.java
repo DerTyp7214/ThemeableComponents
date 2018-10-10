@@ -51,6 +51,11 @@ public class ThemeableFloatingActionButton extends FloatingActionButton {
             public ThemeManager.Component.TYPE getType() {
                 return ThemeManager.Component.TYPE.FAB;
             }
+
+            @Override
+            public boolean accent() {
+                return true;
+            }
         };
         themeManager.register(onThemeChangeListener);
     }
