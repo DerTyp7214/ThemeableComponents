@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-            colorPicker.show();
             colorPicker.setDarkMode(true);
+            colorPicker.show();
         });
 
         findViewById(R.id.toolbar).setOnClickListener(v -> {

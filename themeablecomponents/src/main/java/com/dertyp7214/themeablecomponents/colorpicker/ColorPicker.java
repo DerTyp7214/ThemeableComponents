@@ -36,6 +36,7 @@ public class ColorPicker extends Dialog {
     private int time = 1100;
     private float minBrighness = 0;
     private float maxBrighness = 1;
+    private boolean darkMode = false;
 
     public ColorPicker(Context context) {
         super(context);
@@ -43,15 +44,7 @@ public class ColorPicker extends Dialog {
     }
 
     public void setDarkMode(boolean darkMode) {
-        try {
-            if (darkMode) {
-                redTxt.setTextColor(Color.WHITE);
-                greenTxt.setTextColor(Color.WHITE);
-                blueTxt.setTextColor(Color.WHITE);
-                charp.setTextColor(Color.WHITE);
-            }
-        } catch (Exception ignored) {
-        }
+        this.darkMode = darkMode;
     }
 
     @Override
@@ -136,6 +129,15 @@ public class ColorPicker extends Dialog {
 
         Button btn_ok = findViewById(R.id.btn_ok);
         Button btn_cancel = findViewById(R.id.btn_cancel);
+
+        if (darkMode) {
+            redTxt.setTextColor(Color.WHITE);
+            greenTxt.setTextColor(Color.WHITE);
+            blueTxt.setTextColor(Color.WHITE);
+            charp.setTextColor(Color.WHITE);
+            btn_ok.setTextColor(Color.WHITE);
+            btn_cancel.setTextColor(Color.WHITE);
+        }
 
         btn_ok.setOnClickListener(view -> {
             listener.color(getIntFromColor(red, green, blue));
