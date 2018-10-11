@@ -22,6 +22,8 @@ dependencies {
 	}
 ```
 
+## Usage
+
 ### List of ThemeableComponents:
 
 `com.dertyp7214.themeablecomponents.components.ThemeableButton`
