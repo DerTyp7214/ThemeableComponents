@@ -6,7 +6,8 @@
 /build
 /captures
 .externalNativeBuild
-app/libs/
-gradle/
-themeablecomponents/libs/
 themeablecomponents/src/main/res/drawable/
+/themeablecomponents/src/androidTest/
+/themeablecomponents/src/test/
+/app/src/androidTest/
+/app/src/test/
