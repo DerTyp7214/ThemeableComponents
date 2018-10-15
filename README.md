@@ -26,17 +26,19 @@ dependencies {
 
 ### List of ThemeableComponents:
 
-`com.dertyp7214.themeablecomponents.components.ThemeableButton`
-`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox`
-`com.dertyp7214.themeablecomponents.components.ThemeableEditText`
-`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton`
-`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar`
-`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton`
-`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar`
-`com.dertyp7214.themeablecomponents.components.ThemeableSwitch`
-`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton`
-`com.dertyp7214.themeablecomponents.components.ThemeableToolbar`
-`com.dertyp7214.themeablecomponents.components.ThemeableView`
+ThemeableComponents | Original
+------------------------------------------------------------- | --
+`com.dertyp7214.themeablecomponents.components.ThemeableButton` | MaterialButton
+`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | AppCompatCheckBox 
+`com.dertyp7214.themeablecomponents.components.ThemeableEditText` | TextInputEditText 
+`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | FloatingActionButton 
+`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | ProgressBar 
+`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | AppCompatRadioButton 
+`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | AppCompatSeekBar 
+`com.dertyp7214.themeablecomponents.components.ThemeableSwitch` | Switch 
+`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | ToggleButton
+`com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | Toolbar 
+`com.dertyp7214.themeablecomponents.components.ThemeableView` | View 
 
 use them like the normal ones.
 
@@ -44,26 +46,23 @@ In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 
 ### Functions:
 
-`List<Component> : themeManager.getComponents()` gets all Components
-
-`List<Component> : themeManager.getComponents(this)` gets all Components from this Activity
-
-`List<Component> : themeManager.filterComponents(List<Component>, ThemeManager.Component.TYPE)` filters the Components by Type
+Function | Description
+-- | --
+`List<Component> : themeManager.getComponents()` | gets all Components
+`List<Component> : themeManager.getComponents(this)` | gets all Components from this Activity
+`List<Component> : themeManager.filterComponents(List<Component>, ThemeManager.Component.TYPE)` | filters the Components by Type
 
 
 ### ChangeColors:
 
-`themeManager.changeAccentColor(color)` changes the color of all accent components
-
-`themeManager.changeAccentColor(color, animated)` changes the color animated of all accent components
-
-`themeManager.changePrimaryColor(color)` changes the color of all primary components
-
-`themeManager.changePrimaryColor(color, animated)` changes the color animated of all primary components
-
-`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar)` changes the color of all primary components and the navigation, status-bar
-
-`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar, animated)` changes the color animated of all primary components and the navigation, status-bar
+Function | Description
+-- | --
+`themeManager.changeAccentColor(color)` | changes the color of all accent components
+`themeManager.changeAccentColor(color, animated)` | changes the color animated of all accent components
+`themeManager.changePrimaryColor(color)` | changes the color of all primary components
+`themeManager.changePrimaryColor(color, animated)` | changes the color animated of all primary components
+`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar)` | changes the color of all primary components and the navigation, status-bar
+`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar, animated)` | changes the color animated of all primary components and the navigation, status-bar
 
 
 ### ColorPicker
