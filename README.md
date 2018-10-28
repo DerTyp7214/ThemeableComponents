@@ -68,6 +68,9 @@ Function | Description
 `themeManager.changePrimaryColor(activity, color, statusBar, navigationBar)` | changes the color of all primary components and the navigation, status-bar
 `themeManager.changePrimaryColor(activity, color, statusBar, navigationBar, animated)` | changes the color animated of all primary components and the navigation, status-bar
 
+### Download Example-APP
+
+[Download](https://github.com/DerTyp7214/ThemeableComponents/raw/master/app/release/app-release.apk)
 
 ### ColorPicker
 
