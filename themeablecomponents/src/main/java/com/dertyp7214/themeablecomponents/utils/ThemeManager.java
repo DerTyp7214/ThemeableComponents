@@ -4,12 +4,15 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dertyp7214.themeablecomponents.BuildConfig;
+import com.dertyp7214.themeablecomponents.components.ThemeBottomSheet;
 import com.dertyp7214.themeablecomponents.components.ThemeableButton;
 import com.dertyp7214.themeablecomponents.components.ThemeableCheckBox;
 import com.dertyp7214.themeablecomponents.components.ThemeableEditText;
@@ -27,19 +30,26 @@ import java.util.List;
 
 import androidx.annotation.ColorInt;
 import androidx.core.graphics.ColorUtils;
+import androidx.fragment.app.FragmentActivity;
 
 public class ThemeManager {
 
     private static ThemeManager instance;
     private static int duration = 300;
+    private static SharedPreferences sharedPreferences;
+    private static boolean saveColors;
     private Context context;
     private int colorPrimary = Color.WHITE;
     private int colorAccent = Color.BLACK;
     private List<OnThemeChangeListener> listeners = new ArrayList<>();
     private List<Component> customViews = new ArrayList<>();
+    private int defAccent = Color.GRAY, defPrimary = Color.GRAY;
 
     private ThemeManager(Context context) {
         this.context = context;
+        sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_theme",
+                Context.MODE_PRIVATE);
+        saveColors = sharedPreferences.getBoolean("saveColors", true);
     }
 
     public static ThemeManager getInstance(Context context) {
@@ -145,12 +155,10 @@ public class ThemeManager {
 
     public List<Component> getComponents() {
         List<Component> components = new ArrayList<>();
-
         for (OnThemeChangeListener listener : listeners)
             components.add(new Component(listener));
 
         components.addAll(customViews);
-
         return components;
     }
 
@@ -180,11 +188,102 @@ public class ThemeManager {
 
     public void register(OnThemeChangeListener listener) {
         listeners.add(listener);
-        listener.onThemeChanged(new Theme(listener.accent() ? colorAccent : colorPrimary), false);
+        listener.onThemeChanged(getDefaultTheme(listener), false);
+    }
+
+    private Theme getDefaultTheme(OnThemeChangeListener listener) {
+        if (saveColors) {
+            return new Theme(sharedPreferences
+                    .getInt(listener.getId(), listener.accent() ? defAccent : defPrimary));
+        }
+        return new Theme(listener.accent() ? colorAccent : colorPrimary);
     }
 
     public void register(View view, boolean accent) {
         customViews.add(new Component(view, accent));
+    }
+
+    public void setDefaultAccent(@ColorInt int color) {
+        defAccent = color;
+    }
+
+    public void setDefaultPrimary(@ColorInt int color) {
+        defPrimary = color;
+    }
+
+    public void enableStatusAndNavBar(Activity activity) {
+        OnThemeChangeListener status = new OnThemeChangeListener() {
+            @Override
+            public void onThemeChanged(Theme theme, boolean animated) {
+                changeStatusColor(activity, theme);
+            }
+
+            @Override
+            public Component.TYPE getType() {
+                return Component.TYPE.VIEW;
+            }
+
+            @Override
+            public boolean accent() {
+                return false;
+            }
+
+            @Override
+            public String getId() {
+                return "statusBar";
+            }
+        };
+        OnThemeChangeListener nav = new OnThemeChangeListener() {
+            @Override
+            public void onThemeChanged(Theme theme, boolean animated) {
+                changeNavColor(activity, theme);
+            }
+
+            @Override
+            public Component.TYPE getType() {
+                return Component.TYPE.VIEW;
+            }
+
+            @Override
+            public boolean accent() {
+                return false;
+            }
+
+            @Override
+            public String getId() {
+                return "navigationBar";
+            }
+        };
+        if (! listeners.contains(status))
+            listeners.add(status);
+        if (! listeners.contains(nav))
+            listeners.add(nav);
+        changeNavColor(activity, getDefaultTheme(nav));
+        changeStatusColor(activity, getDefaultTheme(status));
+    }
+
+    private void changeStatusColor(Activity activity, Theme theme) {
+        activity.getWindow().setStatusBarColor(theme.getColor());
+        int tmp = activity.getWindow().getDecorView().getSystemUiVisibility();
+        if (! isDark(theme.getColor()))
+            tmp |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        else tmp &= ~ View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        activity.getWindow().getDecorView().setSystemUiVisibility(tmp);
+    }
+
+    private void changeNavColor(Activity activity, Theme theme) {
+        activity.getWindow().setNavigationBarColor(theme.getColor());
+        int tmp = activity.getWindow().getDecorView().getSystemUiVisibility();
+        if (! isDark(theme.getColor()))
+            tmp |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        else tmp &= ~ View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        activity.getWindow().getDecorView().setSystemUiVisibility(tmp);
+    }
+
+    public void openThemeBottomSheet(FragmentActivity activity) {
+        ThemeBottomSheet bottomSheet = new ThemeBottomSheet(sharedPreferences, listeners);
+        assert bottomSheet.getFragmentManager() != null;
+        bottomSheet.show(activity.getSupportFragmentManager(), "TAG");
     }
 
     @ColorInt
@@ -281,6 +380,7 @@ public class ThemeManager {
         }
 
         public void changeColor(@ColorInt int color, boolean animated) {
+            if (saveColors) sharedPreferences.edit().putInt(listener.getId(), color).apply();
             if (v == null) listener.onThemeChanged(new Theme(color), animated);
             else v.setBackgroundTintList(ColorStateList.valueOf(color));
         }

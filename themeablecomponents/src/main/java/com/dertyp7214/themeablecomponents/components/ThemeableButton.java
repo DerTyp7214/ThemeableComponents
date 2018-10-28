@@ -16,6 +16,8 @@ import java.util.Objects;
 
 import androidx.core.graphics.ColorUtils;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableButton extends com.google.android.material.button.MaterialButton {
 
     private final Context context;
@@ -55,6 +57,11 @@ public class ThemeableButton extends com.google.android.material.button.Material
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableButton.this);
             }
         };
         themeManager.register(onThemeChangeListener);

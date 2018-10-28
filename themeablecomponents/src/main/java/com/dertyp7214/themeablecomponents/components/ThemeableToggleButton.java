@@ -16,6 +16,8 @@ import java.util.Objects;
 
 import androidx.core.graphics.ColorUtils;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableToggleButton extends ToggleButton {
 
     private final Context context;
@@ -55,6 +57,11 @@ public class ThemeableToggleButton extends ToggleButton {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableToggleButton.this);
             }
         };
         themeManager.register(onThemeChangeListener);

@@ -12,6 +12,8 @@ import com.dertyp7214.themeablecomponents.utils.ThemeManager;
 
 import java.lang.reflect.Field;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableEditText extends com.google.android.material.textfield.TextInputEditText {
 
     private final Context context;
@@ -51,6 +53,11 @@ public class ThemeableEditText extends com.google.android.material.textfield.Tex
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableEditText.this);
             }
         };
         themeManager.register(onThemeChangeListener);

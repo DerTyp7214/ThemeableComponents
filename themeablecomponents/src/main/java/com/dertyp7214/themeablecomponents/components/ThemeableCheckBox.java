@@ -15,6 +15,8 @@ import java.util.Objects;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableCheckBox extends AppCompatCheckBox {
 
     private final Context context;
@@ -54,6 +56,11 @@ public class ThemeableCheckBox extends AppCompatCheckBox {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableCheckBox.this);
             }
         };
         themeManager.register(onThemeChangeListener);

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Wallpaper" parent="Theme.MaterialComponents">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Wallpaper.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Wallpaper.NoActionBar.Bridge" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Wallpaper.Light.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Wallpaper.Light.NoActionBar.Bridge" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Theme.MaterialComponents.Light.Dialog.Transparent" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>

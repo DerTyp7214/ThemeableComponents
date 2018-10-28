@@ -26,6 +26,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.ColorUtils;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableToolbar extends Toolbar {
 
     private final Context context;
@@ -65,6 +67,11 @@ public class ThemeableToolbar extends Toolbar {
             @Override
             public boolean accent() {
                 return false;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableToolbar.this);
             }
         };
         themeManager.register(onThemeChangeListener);

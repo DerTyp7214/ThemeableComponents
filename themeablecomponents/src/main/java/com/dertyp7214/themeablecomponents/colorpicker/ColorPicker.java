@@ -1,22 +1,34 @@
 package com.dertyp7214.themeablecomponents.colorpicker;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.dertyp7214.themeablecomponents.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.util.Objects;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Created by lengw on 20.09.2017.
@@ -37,10 +49,16 @@ public class ColorPicker extends Dialog {
     private float minBrighness = 0;
     private float maxBrighness = 1;
     private boolean darkMode = false;
+    private TouchListener touchListener;
+    private Drawable background;
+    private boolean toast = false;
+    private BottomSheetText text;
 
     public ColorPicker(Context context) {
-        super(context);
+        super(context, R.style.Theme_MaterialComponents_Light_Dialog_Transparent);
         c = context;
+        text = new BottomSheetText(getContext());
+        background = new ColorDrawable(Color.WHITE);
     }
 
     public void setDarkMode(boolean darkMode) {
@@ -52,6 +70,9 @@ public class ColorPicker extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.color_picker);
+
+        background.setAlpha(255);
+        Objects.requireNonNull(getWindow()).setBackgroundDrawable(background);
 
         hexCode = findViewById(R.id.hexTxt);
 
@@ -76,14 +97,17 @@ public class ColorPicker extends Dialog {
                 setAllColors(red, green, blue);
                 if (b) setHex(getIntFromColor(red, green, blue));
                 if (listener != null) listener.update(getIntFromColor(red, green, blue));
+                if (toast) toast(i);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.startTouch();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.stopTouch();
             }
         });
 
@@ -95,14 +119,17 @@ public class ColorPicker extends Dialog {
                 setAllColors(red, green, blue);
                 if (b) setHex(getIntFromColor(red, green, blue));
                 if (listener != null) listener.update(getIntFromColor(red, green, blue));
+                if (toast) toast(i);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.startTouch();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.stopTouch();
             }
         });
 
@@ -114,14 +141,17 @@ public class ColorPicker extends Dialog {
                 setAllColors(red, green, blue);
                 if (b) setHex(getIntFromColor(red, green, blue));
                 if (listener != null) listener.update(getIntFromColor(red, green, blue));
+                if (toast) toast(i);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.startTouch();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (touchListener != null) touchListener.stopTouch();
             }
         });
 
@@ -173,6 +203,10 @@ public class ColorPicker extends Dialog {
                 }
             }
         });
+    }
+
+    public void onTouchListener(TouchListener touchListener) {
+        this.touchListener = touchListener;
     }
 
     public void setMinMaxBrighness(float min, float max) {
@@ -230,7 +264,7 @@ public class ColorPicker extends Dialog {
                 btn.setTextColor(Color.LTGRAY);
             } else {
                 btn.setEnabled(true);
-                btn.setTextColor(Color.BLACK);
+                btn.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
             }
         } catch (Exception ignored) {
         }
@@ -289,11 +323,64 @@ public class ColorPicker extends Dialog {
         return String.format("#%06X", (0xFFFFFF & getIntFromColor(red, green, blue)));
     }
 
+    public void setAlpha(float alpha) {
+        View view = findViewById(android.R.id.content);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(view.getAlpha(), alpha);
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(animation -> {
+            float a = (float) animation.getAnimatedValue();
+            view.setAlpha(a);
+            background.setAlpha((int) (255 * a));
+            Objects.requireNonNull(getWindow()).setBackgroundDrawable(background);
+        });
+        valueAnimator.start();
+    }
+
+    public void toast(boolean toast) {
+        this.toast = toast;
+        if (! toast) text.dismiss();
+    }
+
+    private void toast(int i) {
+        text.setText(String.valueOf(i), getIntFromColor(red, green, blue));
+        text.show();
+    }
+
     public interface Listener {
         void color(int color);
 
         void update(int color);
 
         void cancel();
+    }
+
+    public interface TouchListener {
+        void startTouch();
+
+        void stopTouch();
+    }
+
+    @SuppressLint("ValidFragment")
+    private class BottomSheetText extends BottomSheetDialog {
+        String text;
+        TextView textView;
+
+        BottomSheetText(@NonNull Context context) {
+            super(context);
+            textView = new TextView(context);
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+            textView.setTextSize(18F);
+            setContentView(textView);
+            Objects.requireNonNull(getWindow())
+                    .clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+
+        void setText(String text, @ColorInt int color) {
+            this.text = text;
+            textView.setText(text);
+            textView.setBackgroundColor(color);
+            textView.setTextColor(
+                    ColorUtils.calculateLuminance(color) < 0.5 ? Color.WHITE : Color.BLACK);
+        }
     }
 }

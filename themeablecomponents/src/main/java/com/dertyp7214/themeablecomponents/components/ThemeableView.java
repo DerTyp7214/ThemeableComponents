@@ -10,6 +10,8 @@ import com.dertyp7214.themeablecomponents.utils.ThemeManager;
 
 import androidx.core.graphics.ColorUtils;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableView extends View {
 
     private final Context context;
@@ -49,6 +51,11 @@ public class ThemeableView extends View {
             @Override
             public boolean accent() {
                 return false;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableView.this);
             }
         };
         themeManager.register(onThemeChangeListener);

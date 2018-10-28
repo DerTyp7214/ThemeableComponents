@@ -16,6 +16,8 @@ import com.dertyp7214.themeablecomponents.utils.ThemeManager;
 
 import androidx.annotation.ColorInt;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableSwitch extends Switch {
 
     private final Context context;
@@ -56,6 +58,11 @@ public class ThemeableSwitch extends Switch {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableSwitch.this);
             }
         };
         themeManager.register(onThemeChangeListener);

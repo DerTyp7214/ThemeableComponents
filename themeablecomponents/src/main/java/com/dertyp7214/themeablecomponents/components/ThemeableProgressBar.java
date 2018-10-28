@@ -13,6 +13,8 @@ import com.dertyp7214.themeablecomponents.utils.ThemeManager;
 
 import java.util.Objects;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableProgressBar extends ProgressBar {
 
     private final Context context;
@@ -52,6 +54,11 @@ public class ThemeableProgressBar extends ProgressBar {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableProgressBar.this);
             }
         };
         themeManager.register(onThemeChangeListener);

@@ -14,6 +14,8 @@ import java.util.Objects;
 
 import androidx.appcompat.widget.AppCompatSeekBar;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableSeekBar extends AppCompatSeekBar {
 
     private final Context context;
@@ -53,6 +55,11 @@ public class ThemeableSeekBar extends AppCompatSeekBar {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableSeekBar.this);
             }
         };
         themeManager.register(onThemeChangeListener);

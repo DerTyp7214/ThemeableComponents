@@ -15,6 +15,8 @@ import java.util.Objects;
 
 import androidx.appcompat.widget.AppCompatRadioButton;
 
+import static com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView;
+
 public class ThemeableRadioButton extends AppCompatRadioButton {
 
     private final Context context;
@@ -54,6 +56,11 @@ public class ThemeableRadioButton extends AppCompatRadioButton {
             @Override
             public boolean accent() {
                 return true;
+            }
+
+            @Override
+            public String getId() {
+                return getIdFromView(ThemeableRadioButton.this);
             }
         };
         themeManager.register(onThemeChangeListener);
