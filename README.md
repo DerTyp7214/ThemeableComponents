@@ -57,6 +57,10 @@ Function | Description
 
 Function | Description
 -- | --
+`themeManager.enableStatusAndNavBar(activity)` | enable coloring of status and navbar
+`themeManager.openThemeBottomSheet(activity)` | opens bottomsheet with themable components
+`themeManager.setDefaultAccent(color)` | changes the default color of all accent components
+`themeManager.setDefaultPrimary(color)` | changes the default color of all primary components
 `themeManager.changeAccentColor(color)` | changes the color of all accent components
 `themeManager.changeAccentColor(color, animated)` | changes the color animated of all accent components
 `themeManager.changePrimaryColor(color)` | changes the color of all primary components
