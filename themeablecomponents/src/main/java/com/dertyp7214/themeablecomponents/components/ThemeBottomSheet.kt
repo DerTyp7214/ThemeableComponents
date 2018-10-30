@@ -6,7 +6,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -19,6 +22,7 @@ import com.dertyp7214.themeablecomponents.colorpicker.ColorPicker
 import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.lang.Thread.sleep
 import java.util.*
 
 @SuppressLint("ValidFragment")
@@ -95,20 +99,23 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
                         setAlpha(0.01f)
                         colorPicker.toast(true)
                         colorPicker.setAlpha(0.01f)
-                        Objects.requireNonNull<Window>(dialog.window)
-                                .clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                        Objects.requireNonNull<Window>(colorPicker.window)
-                                .clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                        colorPicker.disableInput()
+                        Thread {
+                            sleep(150)
+                            activity!!.runOnUiThread {
+                                dialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                                colorPicker.window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                            }
+                        }.start()
                     }
 
                     override fun stopTouch() {
                         setAlpha(1f)
                         colorPicker.toast(false)
                         colorPicker.setAlpha(1f)
-                        Objects.requireNonNull<Window>(dialog.window)
-                                .addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                        Objects.requireNonNull<Window>(colorPicker.window)
-                                .addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                        colorPicker.enableInput()
+                        dialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                        colorPicker.window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                     }
                 })
                 colorPicker.setListener(object : ColorPicker.Listener {

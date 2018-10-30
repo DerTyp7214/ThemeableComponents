@@ -331,6 +331,14 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
         text.show()
     }
 
+    fun disableInput() {
+        hexCode.isEnabled = false
+    }
+
+    fun enableInput() {
+        hexCode.isEnabled = true
+    }
+
     interface Listener {
         fun color(color: Int)
 
@@ -354,6 +362,7 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
             textView.gravity = Gravity.CENTER_HORIZONTAL
             textView.textSize = 18f
             setContentView(textView)
+            setCancelable(false)
             window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
 
