@@ -21,6 +21,7 @@ import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.colorpicker.ColorPicker
 import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
+import com.dertyp7214.themeablecomponents.utils.ThemeManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.lang.Thread.sleep
 import java.util.*
@@ -30,13 +31,17 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
     private var rootView: View? = null
     private var manager: FragmentManager? = null
     private var TAG: String = ""
+    private lateinit var themeManager: ThemeManager
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
 
+        themeManager = ThemeManager.getInstance(context!!)
+
         rootView = LayoutInflater.from(context).inflate(R.layout.theme_bottom_sheet, null)
         dialog.setContentView(rootView!!)
+        rootView!!.setBackgroundColor(if (themeManager.darkMode) Color.parseColor("#303641") else Color.WHITE)
 
         val items = ArrayList<Item>()
 
@@ -94,6 +99,7 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
                 colorPicker.setColor(item.color)
                 colorPicker.setAnimationTime(0)
                 colorPicker.setCancelable(false)
+                colorPicker.setDarkMode(themeManager.darkMode)
                 colorPicker.onTouchListener(object : ColorPicker.TouchListener {
                     override fun startTouch() {
                         setAlpha(0.01f)
@@ -137,7 +143,8 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
                 colorPicker.show()
             }
 
-            textView.text = item.text
+            textView.text = item.text.split(".").last()
+            textView.setTextColor(if (themeManager.darkMode) Color.WHITE else Color.BLACK)
             colorCard.setCardBackgroundColor(item.color)
         }
 

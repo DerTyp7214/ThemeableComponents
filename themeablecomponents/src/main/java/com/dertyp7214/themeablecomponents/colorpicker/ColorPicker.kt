@@ -50,7 +50,7 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
     private var maxBrightness = 1f
     private var darkMode = false
     private var touchListener: TouchListener? = null
-    private val background: Drawable
+    private var background: Drawable
     private var toast = false
     private val text: BottomSheetText
 
@@ -158,6 +158,9 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
             charp.setTextColor(Color.WHITE)
             btn_ok.setTextColor(Color.WHITE)
             btn_cancel.setTextColor(Color.WHITE)
+            hexCode.setTextColor(Color.WHITE)
+            background = ColorDrawable(Color.parseColor("#303641"))
+            window!!.setBackgroundDrawable(background)
         }
 
         btn_ok.setOnClickListener {

@@ -4,19 +4,23 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
+import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.FragmentActivity
 import com.dertyp7214.themeablecomponents.BuildConfig
+import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.*
-import java.util.*
+import com.dertyp7214.themeablecomponents.helpers.Utils
 
 class ThemeManager private constructor(private val context: Context) {
     private var colorPrimary = Color.WHITE
@@ -27,6 +31,16 @@ class ThemeManager private constructor(private val context: Context) {
     private val customViews = ArrayList<Component>()
     private var defAccent = Color.GRAY
     private var defPrimary = Color.GRAY
+    private var registered: Boolean = false
+    private val activityMap: HashMap<Activity, Int> = HashMap()
+
+    var darkMode: Boolean
+        get() {
+            return sharedPreferences.getBoolean("darkMode", false)
+        }
+        set(value) {
+            sharedPreferences.edit().putBoolean("darkMode", value).apply()
+        }
 
     val components: List<Component>
         get() {
@@ -153,11 +167,13 @@ class ThemeManager private constructor(private val context: Context) {
     }
 
     fun enableStatusAndNavBar(activity: Activity) {
-        val status = object : OnThemeChangeListener {
+        val status = object : OnThemeChangeListenerStatusNav {
             override val type: Component.TYPE
                 get() = Component.TYPE.VIEW
             override val id: String
                 get() = "statusBar"
+            override val idTag: Activity
+                get() = activity
 
             override fun onThemeChanged(theme: Theme, animated: Boolean) {
                 changeStatusColor(activity, theme)
@@ -167,11 +183,13 @@ class ThemeManager private constructor(private val context: Context) {
                 return false
             }
         }
-        val nav = object : OnThemeChangeListener {
+        val nav = object : OnThemeChangeListenerStatusNav {
             override val type: Component.TYPE
                 get() = Component.TYPE.VIEW
             override val id: String
                 get() = "navigationBar"
+            override val idTag: Activity
+                get() = activity
 
             override fun onThemeChanged(theme: Theme, animated: Boolean) {
                 changeNavColor(activity, theme)
@@ -214,9 +232,24 @@ class ThemeManager private constructor(private val context: Context) {
     }
 
     fun openThemeBottomSheet(activity: FragmentActivity) {
-        val bottomSheet = ThemeBottomSheet(sharedPreferences, listeners)
+        val l = ArrayList<OnThemeChangeListener>()
+        l.clear()
+        for (listener in listeners) {
+            if (listener is OnThemeChangeListenerStatusNav && listener.idTag == activity) l.add(listener)
+            else
+                for (component in getComponents(activity)) {
+                    if (listener.id == component.getId() && component.hasListener() && !includesId(l, listener.id))
+                        l.add(component.listener!!)
+                }
+        }
+        val bottomSheet = ThemeBottomSheet(sharedPreferences, l)
         assert(bottomSheet.fragmentManager != null)
         bottomSheet.show(activity.supportFragmentManager, "TAG")
+    }
+
+    private fun includesId(list: List<OnThemeChangeListener>, id: String): Boolean {
+        for (listener in list) if (listener.id == id) return true
+        return false
     }
 
     private fun isThemeable(v: View): Boolean {
@@ -236,6 +269,7 @@ class ThemeManager private constructor(private val context: Context) {
             is ThemeableSeekBar -> Component(v.onThemeChangeListener)
             is ThemeableEditText -> Component(v.onThemeChangeListener)
             is ThemeableRadioButton -> Component(v.onThemeChangeListener)
+            is ThemeableCheckBox -> Component(v.onThemeChangeListener)
             is ThemeableSwitch -> Component(v.onThemeChangeListener)
             is ThemeableToggleButton -> Component(v.onThemeChangeListener)
             is ThemeableToolbar -> Component(v.onThemeChangeListener)
@@ -245,7 +279,7 @@ class ThemeManager private constructor(private val context: Context) {
     }
 
     private fun getAllChildren(v: View): List<View> {
-        if (v !is ViewGroup) {
+        if (v !is ViewGroup || v is ThemeableToolbar) {
             val viewArrayList = ArrayList<View>()
             viewArrayList.add(v)
             return viewArrayList
@@ -260,6 +294,57 @@ class ThemeManager private constructor(private val context: Context) {
         return result
     }
 
+    @StyleRes
+    fun getTheme(): Int {
+        return if (darkMode) R.style.DarkTheme
+        else R.style.LightTheme
+    }
+
+    fun reload(activity: Activity) {
+        activity.recreate()
+    }
+
+    fun isRegistered(): Boolean {
+        return registered
+    }
+
+    fun registerApplication(application: Application) {
+        registered = true
+        application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
+            override fun onActivityPaused(activity: Activity?) {
+
+            }
+
+            override fun onActivityResumed(activity: Activity?) {
+                if (activityMap.containsKey(activity) && activityMap[activity] != getTheme()) {
+                    reload(activity!!)
+                    activityMap[activity] = getTheme()
+                }
+            }
+
+            override fun onActivityStarted(activity: Activity?) {
+
+            }
+
+            override fun onActivityDestroyed(activity: Activity?) {
+
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+
+            }
+
+            override fun onActivityStopped(activity: Activity?) {
+
+            }
+
+            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+                activity!!.setTheme(getTheme())
+                activityMap[activity] = getTheme()
+            }
+        })
+    }
+
     interface Callback {
         fun run(themeManager: ThemeManager)
     }
@@ -270,7 +355,7 @@ class ThemeManager private constructor(private val context: Context) {
             private set
         var isAccent: Boolean = false
             private set
-        private var listener: OnThemeChangeListener? = null
+        internal var listener: OnThemeChangeListener? = null
 
         internal constructor(listener: OnThemeChangeListener) {
             this.type = listener.type
@@ -282,6 +367,15 @@ class ThemeManager private constructor(private val context: Context) {
             this.v = v
             this.type = TYPE.VIEW
             this.isAccent = isAccent
+        }
+
+        fun hasListener(): Boolean {
+            return listener != null
+        }
+
+        fun getId(): String {
+            if (v != null) return Utils.getIdFromView(v!!)
+            return listener!!.id
         }
 
         @JvmOverloads

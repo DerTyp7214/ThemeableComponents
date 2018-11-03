@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="LightTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <item name="android:navigationBarColor">@android:color/darker_gray</item>
+        <item name="colorAccent">@android:color/transparent</item>
+    </style>
+
+    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <item name="android:navigationBarColor">@android:color/darker_gray</item>
+        <item name="colorAccent">@android:color/transparent</item>
+    </style>
     <style name="Wallpaper" parent="Theme.MaterialComponents">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

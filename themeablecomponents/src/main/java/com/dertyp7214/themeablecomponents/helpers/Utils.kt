@@ -24,7 +24,7 @@ object Utils {
             if (res != null)
                 idString = res.getResourceEntryName(id) // get id string entry
         }
-        return idString
+        return "${v.context.javaClass.name}.$idString"
     }
 
     interface DrawableCallback {
