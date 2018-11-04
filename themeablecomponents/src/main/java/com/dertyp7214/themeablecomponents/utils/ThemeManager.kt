@@ -17,6 +17,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.FragmentActivity
+import com.costular.kotlin_utils.sharedprefs.edit
 import com.dertyp7214.themeablecomponents.BuildConfig
 import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.*
@@ -296,8 +297,23 @@ class ThemeManager private constructor(private val context: Context) {
 
     @StyleRes
     fun getTheme(): Int {
-        return if (darkMode) R.style.DarkTheme
-        else R.style.LightTheme
+        return when {
+            sharedPreferences.contains("customTheme") -> sharedPreferences.getInt("customTheme", R.style.LightTheme)
+            darkMode -> R.style.DarkTheme
+            else -> R.style.LightTheme
+        }
+    }
+
+    fun setCustomTheme(@StyleRes styleId: Int?) {
+        if (styleId == null) {
+            sharedPreferences.edit {
+                remove("customTheme")
+            }
+        } else {
+            sharedPreferences.edit {
+                putInt("customTheme", styleId)
+            }
+        }
     }
 
     fun reload(activity: Activity) {
