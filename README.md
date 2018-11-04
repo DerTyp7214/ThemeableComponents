@@ -24,6 +24,11 @@ dependencies {
 
 ## Usage
 
+### Register ThemeManager in Application Class (Optional)
+
+Add to your `Application.class` in `onCreate`: `ThemeManager.getInstance(this).registerApplication(this)`.<br/>
+It will automatically apply your selected theme (dark / light) and apply all colors to your (Themeable)components.
+
 ### List of ThemeableComponents:
 
 ThemeableComponents | Original
@@ -39,6 +44,10 @@ ThemeableComponents | Original
 `com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | ToggleButton
 `com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | Toolbar 
 `com.dertyp7214.themeablecomponents.components.ThemeableView` | View 
+
+Screens | Description
+-- | --
+`com.dertyp7214.themeablecomponents.screens.ThemeableActivity` | extend from this instead of Activity. It activates default theme (dark/light)
 
 use them like the normal ones.
 
@@ -57,6 +66,7 @@ Function | Description
 
 Function | Description
 -- | --
+`themeManager.darkMode` | toggle darkMode
 `themeManager.enableStatusAndNavBar(activity)` | enable coloring of status and navbar
 `themeManager.openThemeBottomSheet(activity)` | opens bottomsheet with themable components
 `themeManager.setDefaultAccent(color)` | changes the default color of all accent components
@@ -78,6 +88,7 @@ Function | Description
 ColorPicker colorPicker = new ColorPicker(activity);
 colorPicker.setColor(color);
 colorPicker.setAnimationTime(duration);
+colorPicker.setDarkMode(darkmode);
 colorPicker.setListener(new ColorPicker.Listener() {
     @Override
     public void color(int color) {
@@ -95,5 +106,4 @@ colorPicker.setListener(new ColorPicker.Listener() {
     }
 });
 colorPicker.show();
-colorPicker.setDarkMode(darkmode);
 ```
