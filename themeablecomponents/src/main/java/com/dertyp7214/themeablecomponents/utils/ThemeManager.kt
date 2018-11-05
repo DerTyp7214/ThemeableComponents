@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
@@ -22,6 +23,7 @@ import com.dertyp7214.themeablecomponents.BuildConfig
 import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.*
 import com.dertyp7214.themeablecomponents.helpers.Utils
+import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
 
 class ThemeManager private constructor(private val context: Context) {
     private var colorPrimary = Color.WHITE
@@ -316,8 +318,32 @@ class ThemeManager private constructor(private val context: Context) {
         }
     }
 
+    fun setCustomTransitions(@AnimRes enterAnim: Int?, @AnimRes exitAnim: Int?) {
+        sharedPreferences.edit {
+            if (enterAnim == null && sharedPreferences.contains("enterAnim"))
+                remove("enterAnim")
+            else
+                putInt("enterAnim", enterAnim!!)
+            if (enterAnim == null && sharedPreferences.contains("exitAnim"))
+                remove("exitAnim")
+            else
+                putInt("exitAnim", exitAnim!!)
+        }
+    }
+
+    fun getTransitions(): Pair<Int, Int> {
+        return Pair(sharedPreferences.getInt("enterAnim", R.anim.fly_in), sharedPreferences.getInt("exitAnim", R.anim.fly_out))
+    }
+
     fun reload(activity: Activity) {
-        activity.recreate()
+        if (activity is ThemeableActivity)
+            activity.recreate()
+        else {
+            val intent = activity.intent
+            activity.finish()
+            activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            activity.startActivity(intent)
+        }
     }
 
     fun isRegistered(): Boolean {
@@ -332,9 +358,17 @@ class ThemeManager private constructor(private val context: Context) {
             }
 
             override fun onActivityResumed(activity: Activity?) {
-                if (activityMap.containsKey(activity) && activityMap[activity] != getTheme()) {
+                var styleId = getTheme()
+                if (activity is ThemeableActivity) {
+                    styleId = when {
+                        getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
+                        getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
+                        else -> getTheme()
+                    }
+                }
+                if (activityMap.containsKey(activity) && activityMap[activity] != styleId) {
                     reload(activity!!)
-                    activityMap[activity] = getTheme()
+                    activityMap[activity] = styleId
                 }
             }
 
@@ -355,8 +389,16 @@ class ThemeManager private constructor(private val context: Context) {
             }
 
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-                activity!!.setTheme(getTheme())
-                activityMap[activity] = getTheme()
+                var styleId = getTheme()
+                if (activity is ThemeableActivity) {
+                    styleId = when {
+                        getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
+                        getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
+                        else -> getTheme()
+                    }
+                }
+                activity!!.setTheme(styleId)
+                activityMap[activity] = styleId
             }
         })
     }
