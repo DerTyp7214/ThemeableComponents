@@ -3,6 +3,7 @@ package com.dertyp7214.myapplication
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.dertyp7214.themeablecomponents.components.ThemeableToggleButton
 
 class Activity : FragmentActivity() {
 
@@ -18,5 +19,6 @@ class Activity : FragmentActivity() {
             themeManager.darkMode = !themeManager.darkMode
             themeManager.reload(this)
         }
+        findViewById<ThemeableToggleButton>(R.id.themeableToggleButton).isChecked = themeManager.darkMode
     }
 }

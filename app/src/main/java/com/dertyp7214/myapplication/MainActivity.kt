@@ -3,15 +3,14 @@ package com.dertyp7214.myapplication
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.FragmentActivity
+import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
 
-class MainActivity : FragmentActivity() {
+class MainActivity : ThemeableActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val themeManager = Application.getInstance().getThemeManager()
         themeManager.enableStatusAndNavBar(this)
 
         findViewById<View>(R.id.button).setOnClickListener { themeManager.openThemeBottomSheet(this) }
