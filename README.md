@@ -57,26 +57,29 @@ In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 
 Function | Description
 -- | --
-`List<Component> : themeManager.getComponents()` | gets all Components
-`List<Component> : themeManager.getComponents(this)` | gets all Components from this Activity
-`List<Component> : themeManager.filterComponents(List<Component>, ThemeManager.Component.TYPE)` | filters the Components by Type
+`ThemeManager.getInstance(activity: Activity): ThemeManager` | returns instance of ThemeManager
+`themeManager.getTransitions(): Pair<Int, Int>` | returns enter and exit Transtiotions
+`themeManager.getComponents(): List<Component>` | returns all Components
+`themeManager.getComponents(this: Activity): List<Component>` | returns all Components from this Activity
+`themeManager.filterComponents(components: List<Component>, type: ThemeManager.Component.TYPE): List<Component>` | filters the Components by Type
 
 
-### ChangeColors:
+### ChangeStyles:
 
 Function | Description
 -- | --
-`themeManager.darkMode` | toggle darkMode
-`themeManager.enableStatusAndNavBar(activity)` | enable coloring of status and navbar
-`themeManager.openThemeBottomSheet(activity)` | opens bottomsheet with themable components
-`themeManager.setDefaultAccent(color)` | changes the default color of all accent components
-`themeManager.setDefaultPrimary(color)` | changes the default color of all primary components
-`themeManager.changeAccentColor(color)` | changes the color of all accent components
-`themeManager.changeAccentColor(color, animated)` | changes the color animated of all accent components
-`themeManager.changePrimaryColor(color)` | changes the color of all primary components
-`themeManager.changePrimaryColor(color, animated)` | changes the color animated of all primary components
-`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar)` | changes the color of all primary components and the navigation, status-bar
-`themeManager.changePrimaryColor(activity, color, statusBar, navigationBar, animated)` | changes the color animated of all primary components and the navigation, status-bar
+`themeManager.darkMode: Boolean` | set / get darkMode
+`themeManager.setCustomTransitions(enterAnim: Int, exitAnim: Int)` | set custom transtitions
+`themeManager.enableStatusAndNavBar(activity: Activity)` | enable coloring of status and navbar
+`themeManager.openThemeBottomSheet(activity: Activity)` | opens bottomsheet with themable components
+`themeManager.setDefaultAccent(color: Int)` | changes the default color of all accent components
+`themeManager.setDefaultPrimary(color: Int)` | changes the default color of all primary components
+`themeManager.changeAccentColor(color: Int)` | changes the color of all accent components
+`themeManager.changeAccentColor(color: Int, animated: Boolean)` | changes the color animated of all accent components
+`themeManager.changePrimaryColor(color: Int)` | changes the color of all primary components
+`themeManager.changePrimaryColor(color: Int, animated: Boolean)` | changes the color animated of all primary components
+`themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean)` | changes the color of all primary components and the navigation, status-bar
+`themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean, animated: Boolean)` | changes the color animated of all primary components and the navigation, status-bar
 
 ### Download Example-APP
 
