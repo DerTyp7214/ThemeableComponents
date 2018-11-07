@@ -33,17 +33,17 @@ It will automatically apply your selected theme (dark / light) and apply all col
 
 ThemeableComponents | Original
 ------------------------------------------------------------- | --
-`com.dertyp7214.themeablecomponents.components.ThemeableButton` | MaterialButton
-`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | AppCompatCheckBox 
-`com.dertyp7214.themeablecomponents.components.ThemeableEditText` | TextInputEditText 
-`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | FloatingActionButton 
-`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | ProgressBar 
-`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | AppCompatRadioButton 
-`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | AppCompatSeekBar 
-`com.dertyp7214.themeablecomponents.components.ThemeableSwitch` | Switch 
-`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | ToggleButton
-`com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | Toolbar 
-`com.dertyp7214.themeablecomponents.components.ThemeableView` | View 
+`com.dertyp7214.themeablecomponents.components.ThemeableButton` | [MaterialButton](https://developer.android.com/reference/com/google/android/material/button/MaterialButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | [AppCompatCheckBox](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatCheckBox)
+`com.dertyp7214.themeablecomponents.components.ThemeableEditText` | [TextInputEditText](https://developer.android.com/reference/com/google/android/material/textfield/TextInputEditText)
+`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | [FloatingActionButton](https://developer.android.com/reference/com/google/android/material/floatingactionbutton/FloatingActionButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | [ProgressBar](https://developer.android.com/reference/android/widget/ProgressBar)
+`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | [AppCompatRadioButton](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatRadioButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | [AppCompatSeekBar](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatSeekBar)
+`com.dertyp7214.themeablecomponents.components.ThemeableSwitch` | [Switch](https://developer.android.com/reference/android/widget/Switch)
+`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | [ToggleButton](https://developer.android.com/reference/android/widget/ToggleButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | [Toolbar](https://developer.android.com/reference/androidx/appcompat/widget/Toolbar)
+`com.dertyp7214.themeablecomponents.components.ThemeableView` | [View](https://developer.android.com/reference/android/view/View)
 
 Screens | Description
 -- | --
@@ -87,26 +87,45 @@ Function | Description
 
 ### ColorPicker
 
-```Java
-ColorPicker colorPicker = new ColorPicker(activity);
-colorPicker.setColor(color);
-colorPicker.setAnimationTime(duration);
-colorPicker.setDarkMode(darkmode);
-colorPicker.setListener(new ColorPicker.Listener() {
-    @Override
-    public void color(int color) {
+Function | Description
+-- | --
+`ColorPicker(context: Context)` | constructor
+`colorPicker.setColor(color: Int)` | set start color
+`colorPicker.setAnimationTime(time: Int)` | set startup animation time
+`colorPicker.setCancelable(cancelable: Boolean)` | if true you can not exit colorpicker with touching next to it
+`colorPicker.setDarkMode(darkMode: Boolean)` | set darkmode
+`colorPicker.onTouchListener(touchListener: ColorPicker.TouchListener)` | set [ColorPicker.TouchListener](#ColorPicker_TouchListener)
+`colorPicker.setListener(listener: ColorPicker.Listener)` | set [ColorPicker.Listener](#ColorPicker_Listener)
+`colorPicker.show()` | displays the ColorPicker
 
+
+## <a name="ColorPicker_TouchListener"></a>Touch Listener
+```Kotlin
+ColorPicker.TouchListener {
+    override fun startTouch() {
+        colorPicker.toast(true)
+        colorPicker.setAlpha(0.01f)
+        colorPicker.disableInput()
     }
 
-    @Override
-    public void update(int color) {
+    override fun stopTouch() {
+        colorPicker.toast(false)
+        colorPicker.setAlpha(1f)
+        colorPicker.enableInput()
+    }
+}
+```
 
+## <a name="ColorPicker_Listener"></a>Listener
+```Kotlin
+ColorPicker.Listener {
+    override fun color(color: Int) {
     }
 
-    @Override
-    public void cancel() {
-
+    override fun update(color: Int) {
     }
-});
-colorPicker.show();
+
+    override fun cancel() {
+    }
+}
 ```
