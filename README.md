@@ -4,7 +4,6 @@
 
 ## To import the lib
 
-
 ### 1. Add it in your root build.gradle at the end of repositories
 ```gradle
 allprojects {
@@ -15,7 +14,7 @@ allprojects {
 }
 ```
 
-### 2. Add the dependency:
+### 2. Add the dependency
 ```gralde
 dependencies {
     implementation 'com.github.DerTyp7214:ThemeableComponents:<LATEST_VERSION>'
@@ -29,21 +28,21 @@ dependencies {
 Add to your `Application.class` in `onCreate`: `ThemeManager.getInstance(this).registerApplication(this)`.<br/>
 It will automatically apply your selected theme (dark / light) and apply all colors to your (Themeable)components.
 
-### List of ThemeableComponents:
+### ThemeableComponents
 
 ThemeableComponents | Original
 ------------------------------------------------------------- | --
-`com.dertyp7214.themeablecomponents.components.ThemeableButton` | MaterialButton
-`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | AppCompatCheckBox 
-`com.dertyp7214.themeablecomponents.components.ThemeableEditText` | TextInputEditText 
-`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | FloatingActionButton 
-`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | ProgressBar 
-`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | AppCompatRadioButton 
-`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | AppCompatSeekBar 
-`com.dertyp7214.themeablecomponents.components.ThemeableSwitch` | Switch 
-`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | ToggleButton
-`com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | Toolbar 
-`com.dertyp7214.themeablecomponents.components.ThemeableView` | View 
+`com.dertyp7214.themeablecomponents.components.ThemeableButton` | [MaterialButton](https://developer.android.com/reference/com/google/android/material/button/MaterialButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | [AppCompatCheckBox](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatCheckBox)
+`com.dertyp7214.themeablecomponents.components.ThemeableEditText` | [TextInputEditText](https://developer.android.com/reference/com/google/android/material/textfield/TextInputEditText)
+`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | [FloatingActionButton](https://developer.android.com/reference/com/google/android/material/floatingactionbutton/FloatingActionButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | [ProgressBar](https://developer.android.com/reference/android/widget/ProgressBar)
+`com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | [AppCompatRadioButton](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatRadioButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | [AppCompatSeekBar](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatSeekBar)
+`com.dertyp7214.themeablecomponents.components.ThemeableSwitch` | [Switch](https://developer.android.com/reference/android/widget/Switch)
+`com.dertyp7214.themeablecomponents.components.ThemeableToggleButton` | [ToggleButton](https://developer.android.com/reference/android/widget/ToggleButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableToolbar` | [Toolbar](https://developer.android.com/reference/androidx/appcompat/widget/Toolbar)
+`com.dertyp7214.themeablecomponents.components.ThemeableView` | [View](https://developer.android.com/reference/android/view/View)
 
 Screens | Description
 -- | --
@@ -53,25 +52,25 @@ use them like the normal ones.
 
 In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 
-### Functions:
+### Functions
 
 Function | Description
 -- | --
-`ThemeManager.getInstance(activity: Activity): ThemeManager` | returns instance of ThemeManager
-`themeManager.getTransitions(): Pair<Int, Int>` | returns enter and exit Transtiotions
+`ThemeManager.getInstance(activity: Activity): ThemeManager` | returns instance of [ThemeManager](#ThemeManager)
+`themeManager.getTransitions(): Pair<Int, Int>` | returns enter and exit Transitions
 `themeManager.getComponents(): List<Component>` | returns all Components
 `themeManager.getComponents(this: Activity): List<Component>` | returns all Components from this Activity
 `themeManager.filterComponents(components: List<Component>, type: ThemeManager.Component.TYPE): List<Component>` | filters the Components by Type
 
 
-### ChangeStyles:
+### <a name="ThemeManager"></a>ThemeManager
 
 Function | Description
 -- | --
 `themeManager.darkMode: Boolean` | set / get darkMode
-`themeManager.setCustomTransitions(enterAnim: Int, exitAnim: Int)` | set custom transtitions
-`themeManager.enableStatusAndNavBar(activity: Activity)` | enable coloring of status and navbar
-`themeManager.openThemeBottomSheet(activity: Activity)` | opens bottomsheet with themable components
+`themeManager.setCustomTransitions(enterAnim: Int, exitAnim: Int)` | set custom transitions
+`themeManager.enableStatusAndNavBar(activity: Activity)` | enable coloring of status and navigationbar
+`themeManager.openThemeBottomSheet(activity: Activity)` | opens Bottomsheet with themeable components
 `themeManager.setDefaultAccent(color: Int)` | changes the default color of all accent components
 `themeManager.setDefaultPrimary(color: Int)` | changes the default color of all primary components
 `themeManager.changeAccentColor(color: Int)` | changes the color of all accent components
@@ -81,32 +80,50 @@ Function | Description
 `themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean)` | changes the color of all primary components and the navigation, status-bar
 `themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean, animated: Boolean)` | changes the color animated of all primary components and the navigation, status-bar
 
+### ColorPicker
+
+Function | Description
+-- | --
+`ColorPicker(context: Context)` | constructor
+`colorPicker.setColor(color: Int)` | set start color
+`colorPicker.setAnimationTime(time: Int)` | set startup animation time
+`colorPicker.setCancelable(cancelable: Boolean)` | if true you can not exit ColoPicker with touching next to it
+`colorPicker.setDarkMode(darkMode: Boolean)` | set Darkmode
+`colorPicker.onTouchListener(touchListener: ColorPicker.TouchListener)` | set [ColorPicker.TouchListener](#ColorPicker_TouchListener)
+`colorPicker.setListener(listener: ColorPicker.Listener)` | set [ColorPicker.Listener](#ColorPicker_Listener)
+`colorPicker.toast(toast: Boolean)` | displays on colorchanging a bottom toast with the value
+`colorPicker.setAlpha(alpha: Float)` | set alpha for the popup
+`colorPicker.disableInput()` | disable input in the TextField
+`colorPicker.enableInput()` | enable input in the TextField
+`colorPicker.show()` | displays the ColorPicker
+
+
+#### <a name="ColorPicker_TouchListener"></a>Touch Listener
+```Kotlin
+ColorPicker.TouchListener {
+    override fun startTouch() {
+    }
+
+    override fun stopTouch() {
+    }
+}
+```
+
+#### <a name="ColorPicker_Listener"></a>Listener
+```Kotlin
+ColorPicker.Listener {
+    override fun color(color: Int) {
+    }
+
+    override fun update(color: Int) {
+    }
+
+    override fun cancel() {
+    }
+}
+```
+
 ### Download Example-APP
 
 [Download](https://github.com/DerTyp7214/ThemeableComponents/raw/master/app/release/app-release.apk)
 
-### ColorPicker
-
-```Java
-ColorPicker colorPicker = new ColorPicker(activity);
-colorPicker.setColor(color);
-colorPicker.setAnimationTime(duration);
-colorPicker.setDarkMode(darkmode);
-colorPicker.setListener(new ColorPicker.Listener() {
-    @Override
-    public void color(int color) {
-
-    }
-
-    @Override
-    public void update(int color) {
-
-    }
-
-    @Override
-    public void cancel() {
-
-    }
-});
-colorPicker.show();
-```

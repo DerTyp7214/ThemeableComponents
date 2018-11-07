@@ -25,7 +25,7 @@ import com.dertyp7214.themeablecomponents.components.*
 import com.dertyp7214.themeablecomponents.helpers.Utils
 import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
 
-class ThemeManager private constructor(private val context: Context) {
+class ThemeManager private constructor(context: Context) {
     private var colorPrimary = Color.WHITE
     @get:ColorInt
     var colorAccent = Color.BLACK
