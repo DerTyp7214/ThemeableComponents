@@ -126,4 +126,3 @@ ColorPicker.Listener {
 ### Download Example-APP
 
 [Download](https://github.com/DerTyp7214/ThemeableComponents/raw/master/app/release/app-release.apk)
-
