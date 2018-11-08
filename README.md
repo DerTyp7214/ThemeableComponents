@@ -15,11 +15,12 @@ allprojects {
 ```
 
 ### 2. Add the dependency
-```gralde
+```gradle
 dependencies {
     implementation 'com.github.DerTyp7214:ThemeableComponents:<LATEST_VERSION>'
 }
 ```
+
 
 ## Usage
 
@@ -28,10 +29,11 @@ dependencies {
 Add to your `Application.class` in `onCreate`: `ThemeManager.getInstance(this).registerApplication(this)`.<br/>
 It will automatically apply your selected theme (dark / light) and apply all colors to your (Themeable)components.
 
+
 ### ThemeableComponents
 
 ThemeableComponents | Original
-------------------------------------------------------------- | --
+-- | --
 `com.dertyp7214.themeablecomponents.components.ThemeableButton` | [MaterialButton](https://developer.android.com/reference/com/google/android/material/button/MaterialButton)
 `com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | [AppCompatCheckBox](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatCheckBox)
 `com.dertyp7214.themeablecomponents.components.ThemeableEditText` | [TextInputEditText](https://developer.android.com/reference/com/google/android/material/textfield/TextInputEditText)
@@ -52,18 +54,19 @@ use them like the normal ones.
 
 In your Activity you can get the ThemeManager: `ThemeManager.getInstance(this)`
 
+
 ### Functions
 
 Function | Description
 -- | --
-`ThemeManager.getInstance(activity: Activity): ThemeManager` | returns instance of [ThemeManager](#ThemeManager)
+`ThemeManager.getInstance(activity: Activity): ThemeManager` | returns instance of [ThemeManager](#thememanager)
 `themeManager.getTransitions(): Pair<Int, Int>` | returns enter and exit Transitions
 `themeManager.getComponents(): List<Component>` | returns all Components
 `themeManager.getComponents(this: Activity): List<Component>` | returns all Components from this Activity
 `themeManager.filterComponents(components: List<Component>, type: ThemeManager.Component.TYPE): List<Component>` | filters the Components by Type
 
 
-### <a name="ThemeManager"></a>ThemeManager
+### ThemeManager
 
 Function | Description
 -- | --
@@ -80,6 +83,7 @@ Function | Description
 `themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean)` | changes the color of all primary components and the navigation, status-bar
 `themeManager.changePrimaryColor(activity: Activity, color: Int, statusBar: Boolean, navigationBar: Boolean, animated: Boolean)` | changes the color animated of all primary components and the navigation, status-bar
 
+
 ### ColorPicker
 
 Function | Description
@@ -89,8 +93,8 @@ Function | Description
 `colorPicker.setAnimationTime(time: Int)` | set startup animation time
 `colorPicker.setCancelable(cancelable: Boolean)` | if true you can not exit ColoPicker with touching next to it
 `colorPicker.setDarkMode(darkMode: Boolean)` | set Darkmode
-`colorPicker.onTouchListener(touchListener: ColorPicker.TouchListener)` | set [ColorPicker.TouchListener](#ColorPicker_TouchListener)
-`colorPicker.setListener(listener: ColorPicker.Listener)` | set [ColorPicker.Listener](#ColorPicker_Listener)
+`colorPicker.onTouchListener(touchListener: ColorPicker.TouchListener)` | set [ColorPicker.TouchListener](#touch-listener)
+`colorPicker.setListener(listener: ColorPicker.Listener)` | set [ColorPicker.Listener](#listener)
 `colorPicker.toast(toast: Boolean)` | displays on colorchanging a bottom toast with the value
 `colorPicker.setAlpha(alpha: Float)` | set alpha for the popup
 `colorPicker.disableInput()` | disable input in the TextField
@@ -98,7 +102,7 @@ Function | Description
 `colorPicker.show()` | displays the ColorPicker
 
 
-#### <a name="ColorPicker_TouchListener"></a>Touch Listener
+#### Touch Listener
 ```Kotlin
 ColorPicker.TouchListener {
     override fun startTouch() {
@@ -109,7 +113,7 @@ ColorPicker.TouchListener {
 }
 ```
 
-#### <a name="ColorPicker_Listener"></a>Listener
+#### Listener
 ```Kotlin
 ColorPicker.Listener {
     override fun color(color: Int) {
