@@ -71,6 +71,8 @@ Function | Description
 Function | Description
 -- | --
 `themeManager.darkMode: Boolean` | set / get darkMode
+`themeManager.startThemeService(activity: Activity)` | starts the theme floating button service
+`themeManager.stopThemeService(activity: Activity)` | stops the theme floating button service
 `themeManager.setCustomTransitions(enterAnim: Int, exitAnim: Int)` | set custom transitions
 `themeManager.enableStatusAndNavBar(activity: Activity)` | enable coloring of status and navigationbar
 `themeManager.openThemeBottomSheet(activity: Activity)` | opens Bottomsheet with themeable components
