@@ -1,4 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dertyp7214.themeablecomponents">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="TASKS"/>
+    <application>
+        <service
+            android:name=".services.FloatingWidgetService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="true" />
+    </application>
 </manifest>

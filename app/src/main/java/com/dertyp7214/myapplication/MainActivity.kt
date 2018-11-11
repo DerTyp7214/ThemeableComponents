@@ -1,8 +1,10 @@
 package com.dertyp7214.myapplication
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
 
 class MainActivity : ThemeableActivity() {
@@ -13,6 +15,14 @@ class MainActivity : ThemeableActivity() {
 
         themeManager.enableStatusAndNavBar(this)
 
+        findViewById<CheckBox>(R.id.checkBox).setOnClickListener {
+            if (it is CheckBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!it.isChecked)
+                    themeManager.stopThemeService(this)
+                else
+                    themeManager.startThemeService(this)
+            }
+        }
         findViewById<View>(R.id.button).setOnClickListener { themeManager.openThemeBottomSheet(this) }
         findViewById<View>(R.id.themeableView).setOnClickListener {
             themeManager.darkMode = !themeManager.darkMode

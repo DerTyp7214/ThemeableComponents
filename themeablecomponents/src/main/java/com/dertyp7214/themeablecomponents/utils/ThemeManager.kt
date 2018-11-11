@@ -6,15 +6,19 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.FragmentActivity
@@ -24,6 +28,8 @@ import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.*
 import com.dertyp7214.themeablecomponents.helpers.Utils
 import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
+import com.dertyp7214.themeablecomponents.services.FloatingWidgetService
+
 
 class ThemeManager private constructor(context: Context) {
     private var colorPrimary = Color.WHITE
@@ -55,6 +61,17 @@ class ThemeManager private constructor(context: Context) {
             return components
         }
 
+    var activeActivity: Activity? = null
+        private set(activity) {
+            field = activity
+        }
+
+    private var activityCounter: Int = 0
+    var isInBackground: Boolean = false
+        get() {
+            return activityCounter == 0
+        }
+
     init {
         sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_theme",
                 Context.MODE_PRIVATE)
@@ -70,6 +87,20 @@ class ThemeManager private constructor(context: Context) {
         for (component in customViews)
             if (component.isAccent)
                 component.changeColor(color, animated)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun startThemeService(activity: Activity) {
+        askForSystemOverlayPermission(activity)
+        if (Settings.canDrawOverlays(activity)) {
+            val intent = Intent(activity, FloatingWidgetService::class.java)
+            activity.startService(intent)
+        }
+    }
+
+    fun stopThemeService(activity: Activity) {
+        val intent = Intent(activity, FloatingWidgetService::class.java)
+        activity.stopService(intent)
     }
 
     @JvmOverloads
@@ -155,6 +186,14 @@ class ThemeManager private constructor(context: Context) {
             Theme(sharedPreferences
                     .getInt(listener.id, if (listener.accent()) defAccent else defPrimary))
         } else Theme(if (listener.accent()) colorAccent else colorPrimary)
+    }
+
+    private fun askForSystemOverlayPermission(activity: Activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(activity)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + activity.packageName))
+            activity.startActivityForResult(intent, 123)
+        }
     }
 
     fun register(view: View, accent: Boolean) {
@@ -246,7 +285,6 @@ class ThemeManager private constructor(context: Context) {
                 }
         }
         val bottomSheet = ThemeBottomSheet(sharedPreferences, l)
-        assert(bottomSheet.fragmentManager != null)
         bottomSheet.show(activity.supportFragmentManager, "TAG")
     }
 
@@ -354,10 +392,11 @@ class ThemeManager private constructor(context: Context) {
         registered = true
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {
-
+                activeActivity = null
             }
 
             override fun onActivityResumed(activity: Activity?) {
+                activeActivity = activity
                 var styleId = getTheme()
                 if (activity is ThemeableActivity) {
                     styleId = when {
@@ -373,22 +412,21 @@ class ThemeManager private constructor(context: Context) {
             }
 
             override fun onActivityStarted(activity: Activity?) {
-
+                activityCounter++
             }
 
             override fun onActivityDestroyed(activity: Activity?) {
-
             }
 
             override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-
             }
 
             override fun onActivityStopped(activity: Activity?) {
-
+                activityCounter--
             }
 
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+                activeActivity = activity
                 var styleId = getTheme()
                 if (activity is ThemeableActivity) {
                     styleId = when {
@@ -401,6 +439,12 @@ class ThemeManager private constructor(context: Context) {
                 activityMap[activity] = styleId
             }
         })
+    }
+
+    fun changeColor(v: View, color: Int) {
+        if (isThemeable(v)) {
+            parseComponent(v)!!.changeColor(color, false)
+        }
     }
 
     interface Callback {
@@ -468,6 +512,7 @@ class ThemeManager private constructor(context: Context) {
         private lateinit var sharedPreferences: SharedPreferences
         private var saveColors: Boolean = false
 
+        @JvmStatic
         fun getInstance(context: Context): ThemeManager {
             if (instance == null) instance = ThemeManager(context)
             return instance as ThemeManager

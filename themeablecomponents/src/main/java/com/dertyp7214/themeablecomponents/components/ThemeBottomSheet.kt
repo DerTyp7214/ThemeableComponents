@@ -33,7 +33,7 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
     private var TAG: String = ""
     private lateinit var themeManager: ThemeManager
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi", "InflateParams")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
 
@@ -50,7 +50,7 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
                     Item(listener, listener.id, sharedPreferences.getInt(listener.id,
                             Color.GRAY)))
 
-        val adapter = Adapter(this, context!!, items)
+        val adapter = Adapter(context!!, items)
         val recyclerView = rootView!!.findViewById<RecyclerView>(R.id.rv_bottom_sheet)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -77,7 +77,7 @@ class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private
     private inner class Item internal constructor(internal var listener: OnThemeChangeListener, internal var text: String, @param:ColorInt @field:ColorInt
     internal var color: Int)
 
-    private inner class Adapter internal constructor(internal var bottomSheet: ThemeBottomSheet, internal var context: Context, internal var items: List<Item>) : RecyclerView.Adapter<ViewHolder>() {
+    private inner class Adapter internal constructor(internal var context: Context, internal var items: List<Item>) : RecyclerView.Adapter<ViewHolder>() {
 
         @SuppressLint("InflateParams")
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
