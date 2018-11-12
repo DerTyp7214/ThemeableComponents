@@ -14,8 +14,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
+        android:visibility="invisible"
         android:src="@drawable/ic_style_black_24dp"
-        app:elevation="7dp"
+        app:elevation="2dp"
         app:backgroundTint="@color/design_default_color_primary"
         app:fabSize="normal" />
 </RelativeLayout>

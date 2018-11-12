@@ -1,9 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package com.dertyp7214.themeablecomponents.utils
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -92,7 +95,7 @@ class ThemeManager private constructor(context: Context) {
     @RequiresApi(Build.VERSION_CODES.M)
     fun startThemeService(activity: Activity) {
         askForSystemOverlayPermission(activity)
-        if (Settings.canDrawOverlays(activity)) {
+        if (Settings.canDrawOverlays(activity) && !isMyServiceRunning(activity, FloatingWidgetService::class.java)) {
             val intent = Intent(activity, FloatingWidgetService::class.java)
             activity.startService(intent)
         }
@@ -112,6 +115,16 @@ class ThemeManager private constructor(context: Context) {
         for (component in customViews)
             if (!component.isAccent)
                 component.changeColor(color, animated)
+    }
+
+    private fun isMyServiceRunning(activity: Activity, serviceClass: Class<*>): Boolean {
+        val manager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     @JvmOverloads

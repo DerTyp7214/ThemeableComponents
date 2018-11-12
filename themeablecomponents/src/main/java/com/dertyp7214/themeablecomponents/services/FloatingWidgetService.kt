@@ -14,9 +14,12 @@ import android.os.Build
 import android.os.IBinder
 import android.view.*
 import androidx.fragment.app.FragmentActivity
+import com.costular.kotlin_utils.sharedprefs.edit
+import com.dertyp7214.themeablecomponents.BuildConfig
 import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pawegio.kandroid.displayHeight
 import com.pawegio.kandroid.displayWidth
 
@@ -24,6 +27,8 @@ class FloatingWidgetService : Service() {
 
     private lateinit var mWindowManager: WindowManager
     private lateinit var mOverlayView: View
+    private lateinit var openBottomSheet: FloatingActionButton
+    private lateinit var params: WindowManager.LayoutParams
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -40,7 +45,7 @@ class FloatingWidgetService : Service() {
 
             mOverlayView = LayoutInflater.from(this).inflate(R.layout.overlay_layout, null)
 
-            val params = WindowManager.LayoutParams(
+            params = WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -48,14 +53,17 @@ class FloatingWidgetService : Service() {
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT)
 
+            val sharedPreferences = getSharedPreferences(BuildConfig.APPLICATION_ID + "_theme", Context.MODE_PRIVATE)
+
             params.gravity = Gravity.TOP or Gravity.LEFT
-            params.x = 0
-            params.y = 250
+            params.x = sharedPreferences.getInt("fabX", 0)
+            params.y = sharedPreferences.getInt("fabY", 250)
 
             mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
             mWindowManager.addView(mOverlayView, params)
 
-            val openBottomSheet = mOverlayView.findViewById<ThemeableFloatingActionButton>(R.id.fabHead)
+            openBottomSheet = mOverlayView.findViewById<ThemeableFloatingActionButton>(R.id.fabHead)
+            openBottomSheet.show()
             ThemeManager.getInstance(activity).changeColor(openBottomSheet, resources.getColor(R.color.design_default_color_primary))
 
             openBottomSheet.setOnTouchListener(object : View.OnTouchListener {
@@ -92,6 +100,10 @@ class FloatingWidgetService : Service() {
                                     animator.addUpdateListener {
                                         params.x = it.animatedValue as Int
                                         mWindowManager.updateViewLayout(mOverlayView, params)
+                                    }
+                                    sharedPreferences.edit {
+                                        putInt("fabX", params.x)
+                                        putInt("fabY", params.y)
                                     }
                                 }
                             } else {
@@ -193,6 +205,8 @@ class FloatingWidgetService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         try {
+            openBottomSheet.hide()
+            Thread.sleep(100)
             mWindowManager.removeView(mOverlayView)
         } catch (e: Exception) {
         }
