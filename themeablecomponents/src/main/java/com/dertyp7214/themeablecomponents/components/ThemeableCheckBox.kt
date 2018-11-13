@@ -12,7 +12,7 @@ import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-class ThemeableCheckBox : AppCompatCheckBox {
+open class ThemeableCheckBox : AppCompatCheckBox {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

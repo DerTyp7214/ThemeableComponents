@@ -14,7 +14,7 @@ import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 import java.util.*
 
-class ThemeableButton : com.google.android.material.button.MaterialButton {
+open class ThemeableButton : com.google.android.material.button.MaterialButton {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

@@ -14,7 +14,7 @@ import com.dertyp7214.themeablecomponents.utils.ThemeManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
-class ThemeableFloatingActionButton : FloatingActionButton {
+open class ThemeableFloatingActionButton : FloatingActionButton {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

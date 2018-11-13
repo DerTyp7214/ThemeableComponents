@@ -22,7 +22,7 @@ import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 import java.util.*
 
-class ThemeableToolbar : Toolbar {
+open class ThemeableToolbar : Toolbar {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

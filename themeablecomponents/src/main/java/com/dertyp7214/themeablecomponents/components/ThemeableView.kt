@@ -8,7 +8,7 @@ import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-class ThemeableView : View {
+open class ThemeableView : View {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

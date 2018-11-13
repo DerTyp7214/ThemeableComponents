@@ -2,6 +2,7 @@
 
 package com.dertyp7214.themeablecomponents.services
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -96,15 +97,28 @@ class FloatingWidgetService : Service() {
                                 } else if (params.x != 0 || params.x != displayWidth) {
                                     val animator = ValueAnimator.ofInt(params.x, if (params.x > displayWidth / 2) displayWidth - mOverlayView.width else 0)
                                     animator.duration = 300
-                                    animator.start()
                                     animator.addUpdateListener {
                                         params.x = it.animatedValue as Int
                                         mWindowManager.updateViewLayout(mOverlayView, params)
                                     }
-                                    sharedPreferences.edit {
-                                        putInt("fabX", params.x)
-                                        putInt("fabY", params.y)
-                                    }
+                                    animator.addListener(object: Animator.AnimatorListener {
+                                        override fun onAnimationCancel(animation: Animator?) {
+                                        }
+
+                                        override fun onAnimationStart(animation: Animator?) {
+                                        }
+
+                                        override fun onAnimationRepeat(animation: Animator?) {
+                                        }
+
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            sharedPreferences.edit {
+                                                putInt("fabX", params.x)
+                                                putInt("fabY", params.y)
+                                            }
+                                        }
+                                    })
+                                    animator.start()
                                 }
                             } else {
                                 val themeManager = ThemeManager.getInstance(activity)

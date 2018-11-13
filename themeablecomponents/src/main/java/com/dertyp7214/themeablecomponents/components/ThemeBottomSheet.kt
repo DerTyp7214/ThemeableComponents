@@ -27,7 +27,7 @@ import java.lang.Thread.sleep
 import java.util.*
 
 @SuppressLint("ValidFragment")
-class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private val listeners: List<OnThemeChangeListener>) : BottomSheetDialogFragment() {
+open class ThemeBottomSheet(private val sharedPreferences: SharedPreferences, private val listeners: List<OnThemeChangeListener>) : BottomSheetDialogFragment() {
     private var rootView: View? = null
     private var manager: FragmentManager? = null
     private var TAG: String = ""

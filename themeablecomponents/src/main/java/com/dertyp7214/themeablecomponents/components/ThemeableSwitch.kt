@@ -15,7 +15,7 @@ import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-class ThemeableSwitch : Switch {
+open class ThemeableSwitch : Switch {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

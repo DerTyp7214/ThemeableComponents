@@ -11,7 +11,7 @@ import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-class ThemeableSeekBar : AppCompatSeekBar {
+open class ThemeableSeekBar : AppCompatSeekBar {
 
     internal val context: Context
     lateinit var onThemeChangeListener: OnThemeChangeListener

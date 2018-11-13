@@ -2,11 +2,11 @@ package com.dertyp7214.themeablecomponents.screens
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-open class ThemeableActivity : FragmentActivity() {
+open class ThemeableActivity : AppCompatActivity() {
 
     protected lateinit var themeManager: ThemeManager
     private lateinit var transitions: Pair<Int, Int>
