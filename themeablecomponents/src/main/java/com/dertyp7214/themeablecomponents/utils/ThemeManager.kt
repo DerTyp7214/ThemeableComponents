@@ -401,7 +401,7 @@ class ThemeManager private constructor(context: Context) {
         return registered
     }
 
-    fun registerApplication(application: Application) {
+    fun registerApplication(application: Application, setStyle: Boolean = true) {
         registered = true
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {
@@ -410,17 +410,19 @@ class ThemeManager private constructor(context: Context) {
 
             override fun onActivityResumed(activity: Activity?) {
                 activeActivity = activity
-                var styleId = getTheme()
-                if (activity is ThemeableActivity) {
-                    styleId = when {
-                        getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
-                        getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
-                        else -> getTheme()
+                if (setStyle) {
+                    var styleId = getTheme()
+                    if (activity is ThemeableActivity) {
+                        styleId = when {
+                            getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
+                            getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
+                            else -> getTheme()
+                        }
                     }
-                }
-                if (activityMap.containsKey(activity) && activityMap[activity] != styleId) {
-                    reload(activity!!)
-                    activityMap[activity] = styleId
+                    if (activityMap.containsKey(activity) && activityMap[activity] != styleId) {
+                        reload(activity!!)
+                        activityMap[activity] = styleId
+                    }
                 }
             }
 
@@ -440,16 +442,18 @@ class ThemeManager private constructor(context: Context) {
 
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
                 activeActivity = activity
-                var styleId = getTheme()
-                if (activity is ThemeableActivity) {
-                    styleId = when {
-                        getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
-                        getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
-                        else -> getTheme()
+                if (setStyle) {
+                    var styleId = getTheme()
+                    if (activity is ThemeableActivity) {
+                        styleId = when {
+                            getTheme() == R.style.DarkTheme -> R.style.DarkTheme_Animated
+                            getTheme() == R.style.LightTheme -> R.style.LightTheme_Animated
+                            else -> getTheme()
+                        }
                     }
+                    activity!!.setTheme(styleId)
+                    activityMap[activity] = styleId
                 }
-                activity!!.setTheme(styleId)
-                activityMap[activity] = styleId
             }
         })
     }
