@@ -19,8 +19,9 @@ import com.costular.kotlin_utils.sharedprefs.edit
 import com.dertyp7214.themeablecomponents.BuildConfig
 import com.dertyp7214.themeablecomponents.R
 import com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton
+import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
+import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pawegio.kandroid.displayHeight
 import com.pawegio.kandroid.displayWidth
 
@@ -28,7 +29,7 @@ class FloatingWidgetService : Service() {
 
     private lateinit var mWindowManager: WindowManager
     private lateinit var mOverlayView: View
-    private lateinit var openBottomSheet: FloatingActionButton
+    private lateinit var openBottomSheet: ThemeableFloatingActionButton
     private lateinit var params: WindowManager.LayoutParams
 
     override fun onBind(intent: Intent): IBinder? {
@@ -63,8 +64,17 @@ class FloatingWidgetService : Service() {
             mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
             mWindowManager.addView(mOverlayView, params)
 
-            openBottomSheet = mOverlayView.findViewById<ThemeableFloatingActionButton>(R.id.fabHead)
+            openBottomSheet = mOverlayView.findViewById(R.id.fabHead)
             openBottomSheet.show()
+            openBottomSheet.onThemeChangeListener = object : OnThemeChangeListener {
+                override val type: ThemeManager.Component.TYPE
+                    get() = ThemeManager.Component.TYPE.FAB
+                override val id: String
+                    get() = "floatingWidgetService"
+
+                override fun onThemeChanged(theme: Theme, animated: Boolean) {}
+                override fun accent() = false
+            }
             ThemeManager.getInstance(activity).changeColor(openBottomSheet, resources.getColor(R.color.design_default_color_primary))
 
             openBottomSheet.setOnTouchListener(object : View.OnTouchListener {
@@ -101,7 +111,7 @@ class FloatingWidgetService : Service() {
                                         params.x = it.animatedValue as Int
                                         mWindowManager.updateViewLayout(mOverlayView, params)
                                     }
-                                    animator.addListener(object: Animator.AnimatorListener {
+                                    animator.addListener(object : Animator.AnimatorListener {
                                         override fun onAnimationCancel(animation: Animator?) {
                                         }
 
