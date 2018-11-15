@@ -38,6 +38,7 @@ ThemeableComponents | Original
 `com.dertyp7214.themeablecomponents.components.ThemeableCheckBox` | [AppCompatCheckBox](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatCheckBox)
 `com.dertyp7214.themeablecomponents.components.ThemeableEditText` | [TextInputEditText](https://developer.android.com/reference/com/google/android/material/textfield/TextInputEditText)
 `com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton` | [FloatingActionButton](https://developer.android.com/reference/com/google/android/material/floatingactionbutton/FloatingActionButton)
+`com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButtonProgressBar` | [FloatingActionButton](https://developer.android.com/reference/com/google/android/material/floatingactionbutton/FloatingActionButton)
 `com.dertyp7214.themeablecomponents.components.ThemeableProgressBar` | [ProgressBar](https://developer.android.com/reference/android/widget/ProgressBar)
 `com.dertyp7214.themeablecomponents.components.ThemeableRadioButton` | [AppCompatRadioButton](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatRadioButton)
 `com.dertyp7214.themeablecomponents.components.ThemeableSeekBar` | [AppCompatSeekBar](https://developer.android.com/reference/androidx/appcompat/widget/AppCompatSeekBar)
