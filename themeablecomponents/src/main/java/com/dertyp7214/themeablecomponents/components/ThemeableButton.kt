@@ -53,7 +53,7 @@ open class ThemeableButton : com.google.android.material.button.MaterialButton {
         themeManager.register(onThemeChangeListener)
     }
 
-    private fun applyTheme(theme: Theme, animated: Boolean) {
+    fun applyTheme(theme: Theme, animated: Boolean) {
         if (animated) {
             val animator = ValueAnimator
                     .ofObject(ArgbEvaluator(), Objects.requireNonNull<ColorStateList>(backgroundTintList).defaultColor,

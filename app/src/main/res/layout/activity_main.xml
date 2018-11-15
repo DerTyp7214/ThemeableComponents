@@ -60,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton
+    <com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButtonProgressBar
         android:id="@+id/themeableFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +69,8 @@
         android:clickable="true"
         android:src="@drawable/ic_add_white_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
 
     <com.dertyp7214.themeablecomponents.components.ThemeableSeekBar
         android:id="@+id/themeableSeekBar"

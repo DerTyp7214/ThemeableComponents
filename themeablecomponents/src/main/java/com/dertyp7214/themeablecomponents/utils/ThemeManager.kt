@@ -309,6 +309,7 @@ class ThemeManager private constructor(context: Context) {
     private fun isThemeable(v: View): Boolean {
         return (v is ThemeableButton || v is ThemeableCheckBox
                 || v is ThemeableEditText || v is ThemeableFloatingActionButton
+                || v is ThemeableFloatingActionButtonProgressBar
                 || v is ThemeableProgressBar || v is ThemeableSeekBar
                 || v is ThemeableRadioButton || v is ThemeableSwitch
                 || v is ThemeableToggleButton || v is ThemeableToolbar
@@ -319,6 +320,7 @@ class ThemeManager private constructor(context: Context) {
         return when (v) {
             is ThemeableButton -> Component(v.onThemeChangeListener)
             is ThemeableFloatingActionButton -> Component(v.onThemeChangeListener)
+            is ThemeableFloatingActionButtonProgressBar -> Component(v.onThemeChangeListener)
             is ThemeableProgressBar -> Component(v.onThemeChangeListener)
             is ThemeableSeekBar -> Component(v.onThemeChangeListener)
             is ThemeableEditText -> Component(v.onThemeChangeListener)
@@ -333,14 +335,13 @@ class ThemeManager private constructor(context: Context) {
     }
 
     private fun getAllChildren(v: View): List<View> {
-        if (v !is ViewGroup || v is ThemeableToolbar) {
+        if (v is ThemeableFloatingActionButtonProgressBar || v !is ViewGroup || v is ThemeableToolbar) {
             val viewArrayList = ArrayList<View>()
             viewArrayList.add(v)
             return viewArrayList
         }
 
         val result = ArrayList<View>()
-
         for (i in 0 until v.childCount) {
             val child = v.getChildAt(i)
             result.addAll(getAllChildren(child))

@@ -50,7 +50,7 @@ open class ThemeableProgressBar : ProgressBar {
         themeManager.register(onThemeChangeListener)
     }
 
-    private fun applyTheme(theme: Theme, animated: Boolean) = if (animated) {
+    fun applyTheme(theme: Theme, animated: Boolean) = if (animated) {
         val animator = ValueAnimator
                 .ofObject(ArgbEvaluator(),
                         progressTintList!!.defaultColor,

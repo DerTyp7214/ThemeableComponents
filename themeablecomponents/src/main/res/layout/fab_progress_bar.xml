@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="2dp"
+        app:elevation="0dp"
+        app:srcCompat="@drawable/ic_file_download_black_24dp" />
+
+    <com.dertyp7214.themeablecomponents.components.ThemeableProgressBar
+        android:id="@+id/themeableProgressBar"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/circle"
+        android:visibility="invisible"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+</FrameLayout>

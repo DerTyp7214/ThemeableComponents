@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.graphics.ColorUtils
 import com.dertyp7214.themeablecomponents.helpers.Utils.getIdFromView
@@ -53,7 +54,7 @@ open class ThemeableFloatingActionButton : FloatingActionButton {
         themeManager.register(onThemeChangeListener)
     }
 
-    private fun applyTheme(theme: Theme, animated: Boolean) {
+    fun applyTheme(theme: Theme, animated: Boolean) {
         if (animated) {
             val animator = ValueAnimator
                     .ofObject(ArgbEvaluator(),
@@ -69,6 +70,19 @@ open class ThemeableFloatingActionButton : FloatingActionButton {
         } else {
             setColorFilter(if (isDark(theme.color)) Color.WHITE else Color.BLACK)
             backgroundTintList = ColorStateList.valueOf(theme.color)
+        }
+    }
+
+    override fun setImageResource(resId: Int) {
+        super.setImageResource(resId)
+        setColorFilter(if (isDark(backgroundTintList!!.defaultColor)) Color.WHITE else Color.BLACK)
+    }
+
+    override fun setImageDrawable(drawable: Drawable?) {
+        super.setImageDrawable(drawable)
+        try {
+            setColorFilter(if (isDark(backgroundTintList!!.defaultColor)) Color.WHITE else Color.BLACK)
+        } catch (e: Exception) {
         }
     }
 
