@@ -309,7 +309,7 @@ class ThemeManager private constructor(context: Context) {
     private fun isThemeable(v: View): Boolean {
         return (v is ThemeableButton || v is ThemeableCheckBox
                 || v is ThemeableEditText || v is ThemeableFloatingActionButton
-                || v is ThemeableFloatingActionButtonProgressBar
+                || v is ThemeableFloatingActionButtonProgressBar || v is ThemeableNavView
                 || v is ThemeableProgressBar || v is ThemeableSeekBar
                 || v is ThemeableRadioButton || v is ThemeableSwitch
                 || v is ThemeableToggleButton || v is ThemeableToolbar
@@ -330,12 +330,13 @@ class ThemeManager private constructor(context: Context) {
             is ThemeableToggleButton -> Component(v.onThemeChangeListener)
             is ThemeableToolbar -> Component(v.onThemeChangeListener)
             is ThemeableView -> Component(v.onThemeChangeListener)
+            is ThemeableNavView -> Component(v.onThemeChangeListener)
             else -> null
         }
     }
 
     private fun getAllChildren(v: View): List<View> {
-        if (v is ThemeableFloatingActionButtonProgressBar || v !is ViewGroup || v is ThemeableToolbar) {
+        if (v is ThemeableFloatingActionButtonProgressBar || v !is ViewGroup || v is ThemeableToolbar || v is ThemeableNavView) {
             val viewArrayList = ArrayList<View>()
             viewArrayList.add(v)
             return viewArrayList
@@ -518,7 +519,8 @@ class ThemeManager private constructor(context: Context) {
             SWITCH,
             TOGGLEBUTTON,
             TOOLBAR,
-            VIEW
+            VIEW,
+            NAVVIEW
         }
     }
 

@@ -15,8 +15,8 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/navView"
+        app:layout_constraintEnd_toEndOf="@id/navView" />
 
     <com.dertyp7214.themeablecomponents.components.ThemeableToggleButton
         android:id="@+id/themeableToggleButton"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/navView"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.dertyp7214.themeablecomponents.components.ThemeableToolbar
@@ -37,4 +37,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.dertyp7214.themeablecomponents.components.ThemeableNavView
+        android:id="@+id/navView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>
