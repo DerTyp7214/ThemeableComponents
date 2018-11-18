@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -41,6 +42,8 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
     private lateinit var colorView: View
     private lateinit var shape: GradientDrawable
     private lateinit var hexCode: EditText
+    private lateinit var  btnOk: Button
+    private lateinit var  btnCancel: Button
     private var red = Color.red(Color.GRAY).toFloat()
     private var green = Color.green(Color.GRAY).toFloat()
     private var blue = Color.blue(Color.GRAY).toFloat()
@@ -148,26 +151,29 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
 
         setup()
 
-        val btn_ok = findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = findViewById<Button>(R.id.btn_cancel)
+        btnOk = findViewById(R.id.btn_ok)
+        btnCancel = findViewById(R.id.btn_cancel)
+
+        btnOk.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        btnCancel.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
 
         if (darkMode) {
             redTxt.setTextColor(Color.WHITE)
             greenTxt.setTextColor(Color.WHITE)
             blueTxt.setTextColor(Color.WHITE)
             charp.setTextColor(Color.WHITE)
-            btn_ok.setTextColor(Color.WHITE)
-            btn_cancel.setTextColor(Color.WHITE)
+            btnOk.setTextColor(Color.WHITE)
+            btnCancel.setTextColor(Color.WHITE)
             hexCode.setTextColor(Color.WHITE)
             background = ColorDrawable(Color.parseColor("#303641"))
             window!!.setBackgroundDrawable(background)
         }
 
-        btn_ok.setOnClickListener {
+        btnOk.setOnClickListener {
             listener!!.color(getIntFromColor(red, green, blue))
             dismiss()
         }
-        btn_cancel.setOnClickListener {
+        btnCancel.setOnClickListener {
             listener!!.cancel()
             dismiss()
         }

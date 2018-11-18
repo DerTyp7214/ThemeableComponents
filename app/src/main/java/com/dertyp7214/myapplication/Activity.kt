@@ -11,7 +11,7 @@ class Activity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity)
 
-        val themeManager = Application.getInstance().getThemeManager()
+        val themeManager = Application.getInstance().getManager()
         themeManager.enableStatusAndNavBar(this)
 
         findViewById<View>(R.id.themeableFloatingActionButton).setOnClickListener { themeManager.openThemeBottomSheet(this) }

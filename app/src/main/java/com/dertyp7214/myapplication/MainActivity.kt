@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.CheckBox
 import com.dertyp7214.themeablecomponents.components.ThemeableFloatingActionButtonProgressBar
 import com.dertyp7214.themeablecomponents.screens.ThemeableActivity
-import kotlin.random.Random
 
 class MainActivity : ThemeableActivity() {
 
@@ -36,17 +35,14 @@ class MainActivity : ThemeableActivity() {
         fab.isLoading = true
         fab.isIndeterminate = false
 
-        var counter = 0
-
         Thread {
             while (true) {
                 runOnUiThread {
-                    if (counter == 0) fab.isLoading = true else if (counter == 100) fab.isLoading = false
-                    fab.progress = if (counter == 150) 0 else counter + 1
-                    fab.secondaryProgress = if (counter == 150) 0 else fab.secondaryProgress + Random.nextInt(1, 3)
-                    if (counter == 150) counter = 0 else counter++
+                    fab.isLoading = !fab.isLoading
+                    fab.progress = 40
+                    fab.secondaryProgress = 55
                 }
-                Thread.sleep(Random.nextLong(10, 100))
+                Thread.sleep(2000)
             }
         }.start()
     }

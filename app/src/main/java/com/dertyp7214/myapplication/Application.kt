@@ -1,14 +1,9 @@
 package com.dertyp7214.myapplication
 
+import com.dertyp7214.themeablecomponents.controller.AppController
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
 
-class Application : android.app.Application(){
-
-    private lateinit var themeManager: ThemeManager
-
-    fun getThemeManager(): ThemeManager {
-        return themeManager
-    }
+class Application : AppController(){
 
     companion object {
         private var instance: Application? = null
@@ -20,10 +15,7 @@ class Application : android.app.Application(){
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        instance = this
-        themeManager = ThemeManager.getInstance(this)
-        themeManager.registerApplication(this)
+    fun getManager(): ThemeManager {
+        return ThemeManager.getInstance(this)
     }
 }
