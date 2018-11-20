@@ -118,7 +118,7 @@ open class ThemeableFloatingActionButtonProgressBar : RelativeLayout {
                 progressBar.visibility = if (value) View.VISIBLE else View.INVISIBLE
                 clearToTick.start()
             } else
-                floatingActionButton.start()
+                tickToDownload.start()
         }
 
     var max: Int
