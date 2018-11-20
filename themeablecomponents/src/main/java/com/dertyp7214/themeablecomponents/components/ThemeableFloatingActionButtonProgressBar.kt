@@ -91,19 +91,34 @@ open class ThemeableFloatingActionButtonProgressBar : RelativeLayout {
 
     var isLoading: Boolean
         get() {
-            return progressBar.visibility == View.VISIBLE
+            return if (isFinished) isFinished else progressBar.visibility == View.VISIBLE
         }
         set(value) {
-            progressBar.visibility = if (value) View.VISIBLE else View.INVISIBLE
-            val downloadToClear: AnimatedVectorDrawable = resources.getDrawable(R.drawable.download_to_clear, null) as AnimatedVectorDrawable
-            val clearToDownload: AnimatedVectorDrawable = resources.getDrawable(R.drawable.clear_to_download, null) as AnimatedVectorDrawable
-            floatingActionButton.setImageDrawable(if (value) downloadToClear else clearToDownload)
+            if (!isFinished) {
+                progressBar.visibility = if (value) View.VISIBLE else View.INVISIBLE
+                val downloadToClear: AnimatedVectorDrawable = resources.getDrawable(R.drawable.download_to_clear, null) as AnimatedVectorDrawable
+                val clearToDownload: AnimatedVectorDrawable = resources.getDrawable(R.drawable.clear_to_download, null) as AnimatedVectorDrawable
+                floatingActionButton.setImageDrawable(if (value) downloadToClear else clearToDownload)
+                if (value) {
+                    downloadToClear.start()
+                    progressBar.progress = 0
+                    progressBar.secondaryProgress = 0
+                } else
+                    clearToDownload.start()
+            }
+        }
+
+    var isFinished: Boolean = false
+        set(value) {
+            field = value
+            val clearToTick: AnimatedVectorDrawable = resources.getDrawable(R.drawable.clear_to_tick, null) as AnimatedVectorDrawable
+            val tickToDownload: AnimatedVectorDrawable = resources.getDrawable(R.drawable.tick_to_download, null) as AnimatedVectorDrawable
+            floatingActionButton.setImageDrawable(if (value) clearToTick else tickToDownload)
             if (value) {
-                downloadToClear.start()
-                progressBar.progress = 0
-                progressBar.secondaryProgress = 0
+                progressBar.visibility = if (value) View.VISIBLE else View.INVISIBLE
+                clearToTick.start()
             } else
-                clearToDownload.start()
+                floatingActionButton.start()
         }
 
     var max: Int
