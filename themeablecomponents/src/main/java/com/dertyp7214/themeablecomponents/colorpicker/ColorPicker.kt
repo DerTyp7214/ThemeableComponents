@@ -12,38 +12,38 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import com.dertyp7214.themeablecomponents.R
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 /**
  * Created by lengw on 20.09.2017.
  */
 
-class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComponents_Light_Dialog_Transparent) {
+class ColorPicker(c: Context) : Dialog(c, R.style.Theme_MaterialComponents_Light_Dialog_Transparent) {
 
+    private lateinit var alphaTxt: TextView
     private lateinit var redTxt: TextView
     private lateinit var greenTxt: TextView
     private lateinit var blueTxt: TextView
-    private lateinit var charp: TextView
+    private lateinit var alphaBar: ColorSeekBar
     private lateinit var redBar: ColorSeekBar
     private lateinit var greenBar: ColorSeekBar
     private lateinit var blueBar: ColorSeekBar
     private lateinit var colorView: View
     private lateinit var shape: GradientDrawable
     private lateinit var hexCode: EditText
-    private lateinit var  btnOk: Button
-    private lateinit var  btnCancel: Button
+    private lateinit var btnOk: Button
+    private lateinit var btnCancel: Button
+    private var alpha = Color.alpha(Color.GRAY).toFloat()
     private var red = Color.red(Color.GRAY).toFloat()
     private var green = Color.green(Color.GRAY).toFloat()
     private var blue = Color.blue(Color.GRAY).toFloat()
@@ -55,19 +55,40 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
     private var touchListener: TouchListener? = null
     private var background: Drawable
     private var toast = false
-    private val text: BottomSheetText
 
     val colorInt: Int
-        get() = getIntFromColor(red, green, blue)
+        get() = getIntFromColor(alpha, red, green, blue)
+
+    var hexCharp: Boolean = true
+        @SuppressLint("SetTextI18n")
+        private set(value) {
+            field = value
+            try {
+                if (!hexCode.text.contains('#'))
+                    hexCode.setText("#${hexCode.text}")
+            } catch (e: Exception) {
+            }
+        }
+
+    var colorMode: ColorMode = ColorMode.RGB
+        set(value) {
+            field = value
+            field.text = ColorMode.BottomSheetText(context)
+        }
 
     init {
-        text = BottomSheetText(context)
+        colorMode.text = ColorMode.BottomSheetText(context)
         background = ColorDrawable(Color.WHITE)
     }
 
     fun setDarkMode(darkMode: Boolean) {
         this.darkMode = darkMode
     }
+
+    private val alphaBarColor = if (darkMode) Color.WHITE else Color.BLACK
+    private val redBarColor = Color.RED
+    private val greenBarColor = Color.GREEN
+    private val blueBarColor = Color.BLUE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +100,12 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
 
         hexCode = findViewById(R.id.hexTxt)
 
-        charp = findViewById(R.id.charp)
-
+        alphaTxt = findViewById(R.id.txtAlpha)
         redTxt = findViewById(R.id.txtRed)
         greenTxt = findViewById(R.id.txtGreen)
         blueTxt = findViewById(R.id.txtBlue)
 
+        alphaBar = findViewById(R.id.alpha)
         redBar = findViewById(R.id.red)
         greenBar = findViewById(R.id.green)
         blueBar = findViewById(R.id.blue)
@@ -92,14 +113,64 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
         val bgDrawable = colorView.background as LayerDrawable
         shape = bgDrawable.findDrawableByLayerId(R.id.color_plate) as GradientDrawable
 
-        redBar.setColor(Color.RED)
+        if (colorMode == ColorMode.ARGB) {
+            alphaBar.visibility = View.VISIBLE
+            alphaTxt.visibility = View.VISIBLE
+        } else {
+            alphaBar.visibility = View.INVISIBLE
+            alphaTxt.visibility = View.INVISIBLE
+            alphaBar.layoutParams.height = 0
+            alphaTxt.layoutParams.height = 0
+            setMargins(alphaBar, 0, 0, 0, 0)
+            setMargins(alphaTxt, 0, 0, 0, 0)
+        }
+
+        hexCode.filters = arrayOf(InputFilter.LengthFilter(colorMode.length), InputFilter.AllCaps(),
+                InputFilter { source, _, _, dest, dstart, _ ->
+                    val filtered = source.filterIndexed { index, c ->
+                        val idx = dstart + index
+                        (c == '#' && idx == 0 && !dest.contains('#')) || c in "0123456789ABCDEF"
+                    }
+                    if (dstart == 0 && filtered.getOrNull(0) != '#' && !dest.contains('#'))
+                        filtered.padStart(1, '#')
+                    else filtered
+                })
+
+        alphaBar.setColor(alphaBarColor)
+        alphaBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                val color = colorMode.calcColor(arrayListOf(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress))
+                alpha = Color.alpha(color).toFloat()
+                red = Color.red(color).toFloat()
+                blue = Color.green(color).toFloat()
+                red = Color.blue(color).toFloat()
+                setAllColors(alpha, red, green, blue)
+                if (b) setHex(colorInt)
+                if (listener != null) listener!!.update(colorInt)
+                if (toast) toast(i, 0)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                if (touchListener != null) touchListener!!.startTouch()
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                if (touchListener != null) touchListener!!.stopTouch()
+            }
+        })
+
+        redBar.setColor(redBarColor)
         redBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                red = i.toFloat()
-                setAllColors(red, green, blue)
-                if (b) setHex(getIntFromColor(red, green, blue))
-                if (listener != null) listener!!.update(getIntFromColor(red, green, blue))
-                if (toast) toast(i)
+                val color = colorMode.calcColor(arrayListOf(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress))
+                alpha = Color.alpha(color).toFloat()
+                red = Color.red(color).toFloat()
+                green = Color.green(color).toFloat()
+                blue = Color.blue(color).toFloat()
+                setAllColors(alpha, red, green, blue)
+                if (b) setHex(colorInt)
+                if (listener != null) listener!!.update(colorInt)
+                if (toast) toast(i, 1)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -111,14 +182,18 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
             }
         })
 
-        greenBar.setColor(Color.GREEN)
+        greenBar.setColor(greenBarColor)
         greenBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                green = i.toFloat()
-                setAllColors(red, green, blue)
-                if (b) setHex(getIntFromColor(red, green, blue))
-                if (listener != null) listener!!.update(getIntFromColor(red, green, blue))
-                if (toast) toast(i)
+                val color = colorMode.calcColor(arrayListOf(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress))
+                alpha = Color.alpha(color).toFloat()
+                red = Color.red(color).toFloat()
+                green = Color.green(color).toFloat()
+                blue = Color.blue(color).toFloat()
+                setAllColors(alpha, red, green, blue)
+                if (b) setHex(colorInt)
+                if (listener != null) listener!!.update(colorInt)
+                if (toast) toast(i, 2)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -130,14 +205,18 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
             }
         })
 
-        blueBar.setColor(Color.BLUE)
+        blueBar.setColor(blueBarColor)
         blueBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                blue = i.toFloat()
-                setAllColors(red, green, blue)
-                if (b) setHex(getIntFromColor(red, green, blue))
-                if (listener != null) listener!!.update(getIntFromColor(red, green, blue))
-                if (toast) toast(i)
+                val color = colorMode.calcColor(arrayListOf(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress))
+                alpha = Color.alpha(color).toFloat()
+                red = Color.red(color).toFloat()
+                green = Color.green(color).toFloat()
+                blue = Color.blue(color).toFloat()
+                setAllColors(alpha, red, green, blue)
+                if (b) setHex(colorInt)
+                if (listener != null) listener!!.update(colorInt)
+                if (toast) toast(i, 3)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -158,10 +237,11 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
         btnCancel.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
 
         if (darkMode) {
+            alphaBar.setColor(Color.WHITE)
+            alphaTxt.setTextColor(Color.WHITE)
             redTxt.setTextColor(Color.WHITE)
             greenTxt.setTextColor(Color.WHITE)
             blueTxt.setTextColor(Color.WHITE)
-            charp.setTextColor(Color.WHITE)
             btnOk.setTextColor(Color.WHITE)
             btnCancel.setTextColor(Color.WHITE)
             hexCode.setTextColor(Color.WHITE)
@@ -170,35 +250,43 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
         }
 
         btnOk.setOnClickListener {
-            listener!!.color(getIntFromColor(red, green, blue))
+            listener!!.color(colorInt)
             dismiss()
         }
+
         btnCancel.setOnClickListener {
             listener!!.cancel()
             dismiss()
         }
+
         hexCode.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (Math.abs(i1 - i2) == 1 && hexCode.text.length == 6) {
-                    val hex = hexCode.text.toString()
+                if (Math.abs(i1 - i2) == 1 && ((hexCode.text.length == colorMode.length - 1 && hexCode.text[0] != '#')
+                                || (hexCode.text.length == colorMode.length && hexCode.text[0] == '#'))) {
+                    val hex = hexCode.text.toString().replace("#", "")
                     val color = Color.parseColor("#$hex")
+                    val alpha = Color.alpha(color)
                     val red = Color.red(color)
                     val green = Color.green(color)
                     val blue = Color.blue(color)
-                    setAllColors(red, green, blue, false)
-                    hexCode.setSelection(hex.length)
+                    setAllColors(alpha, red, green, blue, false)
+                    hexCode.setSelection(hexCode.text.length)
                 }
             }
 
             override fun afterTextChanged(editable: Editable) {
-                if (hexCode.text.length == 6) {
-                    val color = Color.parseColor("#${hexCode.text}")
-                    setAllColors(Color.red(color), Color.green(color), Color.blue(color), true)
+                if ((hexCode.text.length == colorMode.length - 1 && hexCode.text[0] != '#') || (hexCode.text.length == colorMode.length && hexCode.text[0] == '#')) {
+                    val color = Color.parseColor("#${hexCode.text.toString().replace("#", "")}")
+                    setAllColors(Color.alpha(color), Color.red(color), Color.green(color), Color.blue(color), true)
                 }
             }
         })
+    }
+
+    private fun colorBar(bar: ColorSeekBar, current: Float, max: Float, color: Int) {
+        bar.setColor(ColorUtils.blendARGB(if (darkMode) Color.WHITE else Color.BLACK, color, current / max))
     }
 
     fun onTouchListener(touchListener: TouchListener) {
@@ -219,7 +307,7 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
     }
 
     private fun setup() {
-        setAllColors(this.red.toInt(), this.green.toInt(), this.blue.toInt(), false)
+        setAllColors(this.alpha.toInt(), this.red.toInt(), this.green.toInt(), this.blue.toInt(), false)
     }
 
     fun setColor(color: Int) {
@@ -232,23 +320,25 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
 
     private fun stringColor(color: String) {
         val tmp = Color.parseColor(color)
-        setAllColors(Color.red(tmp), Color.green(tmp), Color.blue(tmp), false)
+        setAllColors(Color.alpha(tmp), Color.red(tmp), Color.green(tmp), Color.blue(tmp), false)
     }
 
     private fun intColor(color: Int) {
-        setAllColors(Color.red(color), Color.green(color), Color.blue(color), false)
+        setAllColors(Color.alpha(color), Color.red(color), Color.green(color), Color.blue(color), false)
     }
 
-    private fun setAllColors(r: Float, g: Float, b: Float) {
-        setAllColors(r.toInt(), g.toInt(), b.toInt(), true)
+    private fun setAllColors(a: Float, r: Float, g: Float, b: Float) {
+        setAllColors(a.toInt(), r.toInt(), g.toInt(), b.toInt(), true)
     }
 
-    private fun setAllColors(r: Int, g: Int, b: Int, self: Boolean) {
-        val color = getIntFromColor(r.toFloat(), g.toFloat(), b.toFloat())
+    private fun setAllColors(a: Int, r: Int, g: Int, b: Int, self: Boolean) {
+        val color = getIntFromColor(a.toFloat(), r.toFloat(), g.toFloat(), b.toFloat())
+        val ac = Color.alpha(color)
         val rc = Color.red(color)
         val gc = Color.green(color)
         val bc = Color.blue(color)
 
+        this.alpha = ac.toFloat()
         this.red = rc.toFloat()
         this.green = gc.toFloat()
         this.blue = bc.toFloat()
@@ -269,22 +359,29 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
 
         try {
             if (!self) {
-                animateSeek(redBar, rc, time)
-                animateSeek(greenBar, gc, time)
-                animateSeek(blueBar, bc, time)
+                animateSeek(alphaBar, ac, time, alphaBarColor)
+                animateSeek(redBar, rc, time, redBarColor)
+                animateSeek(greenBar, gc, time, greenBarColor)
+                animateSeek(blueBar, bc, time, blueBarColor)
                 setHex(color)
             }
 
+            alphaTxt.text = ac.toString()
             redTxt.text = rc.toString()
             greenTxt.text = gc.toString()
             blueTxt.text = bc.toString()
             shape.setColor(color)
+
+            colorBar(alphaBar, alphaBar.progress.toFloat(), alphaBar.max.toFloat(), alphaBarColor)
+            colorBar(redBar, redBar.progress.toFloat(), redBar.max.toFloat(), redBarColor)
+            colorBar(greenBar, greenBar.progress.toFloat(), greenBar.max.toFloat(), greenBarColor)
+            colorBar(blueBar, blueBar.progress.toFloat(), blueBar.max.toFloat(), blueBarColor)
         } catch (ignored: Exception) {
         }
     }
 
-    private fun animateSeek(seekBar: SeekBar, toVal: Int, time: Int) {
-        val anim = ValueAnimator.ofInt(seekBar.progress, toVal)
+    private fun animateSeek(seekBar: SeekBar, toVal: Int, time: Int, color: Int) {
+        val anim = ValueAnimator.ofInt(seekBar.progress, ((toVal.toFloat() / 255) * 360).toInt())
         anim.duration = time.toLong()
         anim.addUpdateListener {
             val animProgress = it.animatedValue as Int
@@ -297,24 +394,16 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
     }
 
     private fun setHex(color: Int) {
-        val hex = String.format("#%06X", 0xFFFFFF and color)
-        hexCode.setText(hex.replace("#", ""))
+        hexCode.setText(if (hexCharp) "#${Integer.toHexString(color).substring(colorMode.sub)}" else Integer.toHexString(color).substring(colorMode.sub))
     }
 
-    private fun getIntFromColor(Red: Float, Green: Float, Blue: Float): Int {
-        var r = Math.round(255 * (256 - Red))
-        var g = Math.round(255 * (256 - Green))
-        var b = Math.round(255 * (256 - Blue))
 
-        r = r shl 16 and 0x00FF0000
-        g = g shl 8 and 0x0000FF00
-        b = b and 0x000000FF
-
-        return -0x1000000 or r or g or b
+    private fun getIntFromColor(Alpha: Float, Red: Float, Green: Float, Blue: Float): Int {
+        return Alpha.toInt() shl 24 or (Red.toInt() shl 16) or (Green.toInt() shl 8) or Blue.toInt()
     }
 
-    fun getColorString(red: Int, green: Int, blue: Int): String {
-        return String.format("#%06X", 0xFFFFFF and getIntFromColor(red.toFloat(), green.toFloat(), blue.toFloat()))
+    fun getColorString(alpha: Int, red: Int, green: Int, blue: Int): String {
+        return "#${Integer.toHexString(getIntFromColor(alpha.toFloat(), red.toFloat(), green.toFloat(), blue.toFloat())).substring(colorMode.sub)}"
     }
 
     fun setAlpha(alpha: Float) {
@@ -332,12 +421,12 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
 
     fun toast(toast: Boolean) {
         this.toast = toast
-        if (!toast) text.dismiss()
+        if (!toast) colorMode.text.dismiss()
     }
 
-    private fun toast(i: Int) {
-        text.setText(i.toString(), getIntFromColor(red, green, blue))
-        text.show()
+    private fun toast(i: Int, type: Int) {
+        colorMode.setText(i, getIntFromColor(alpha, red, green, blue), type)
+        colorMode.text.show()
     }
 
     fun disableInput() {
@@ -362,25 +451,19 @@ class ColorPicker(private val c: Context) : Dialog(c, R.style.Theme_MaterialComp
         fun stopTouch()
     }
 
-    @SuppressLint("ValidFragment")
-    private inner class BottomSheetText internal constructor(context: Context) : BottomSheetDialog(context) {
-        internal lateinit var text: String
-        internal var textView: TextView = TextView(context)
+    private fun dpFromPx(context: Context, px: Float): Float {
+        return px / context.resources.displayMetrics.density
+    }
 
-        init {
-            textView.gravity = Gravity.CENTER_HORIZONTAL
-            textView.textSize = 18f
-            setContentView(textView)
-            setCancelable(false)
-            window!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        }
+    private fun pxFromDp(context: Context, dp: Float): Float {
+        return dp * context.resources.displayMetrics.density
+    }
 
-        internal fun setText(text: String, @ColorInt color: Int) {
-            this.text = text
-            textView.text = text
-            textView.setBackgroundColor(color)
-            textView.setTextColor(
-                    if (ColorUtils.calculateLuminance(color) < 0.5) Color.WHITE else Color.BLACK)
+    private fun setMargins(v: View, l: Int, t: Int, r: Int, b: Int) {
+        if (v.layoutParams is ViewGroup.MarginLayoutParams) {
+            val p = v.layoutParams as ViewGroup.MarginLayoutParams
+            p.setMargins(l, t, r, b)
+            v.requestLayout()
         }
     }
 }

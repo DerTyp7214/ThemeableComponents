@@ -14,6 +14,7 @@ import com.dertyp7214.themeablecomponents.helpers.Utils
 import com.dertyp7214.themeablecomponents.utils.OnThemeChangeListener
 import com.dertyp7214.themeablecomponents.utils.Theme
 import com.dertyp7214.themeablecomponents.utils.ThemeManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 open class ThemeableFloatingActionButtonProgressBar : RelativeLayout {
@@ -150,5 +151,23 @@ open class ThemeableFloatingActionButtonProgressBar : RelativeLayout {
 
     private fun isDark(color: Int): Boolean {
         return ColorUtils.calculateLuminance(color) < 0.5
+    }
+
+    fun hide() {
+        floatingActionButton.hide(object: FloatingActionButton.OnVisibilityChangedListener() {
+            override fun onHidden(fab: FloatingActionButton?) {
+                super.onHidden(fab)
+                progressBar.visibility = View.INVISIBLE
+            }
+        })
+    }
+
+    fun show() {
+        floatingActionButton.show(object: FloatingActionButton.OnVisibilityChangedListener() {
+            override fun onShown(fab: FloatingActionButton?) {
+                super.onShown(fab)
+                progressBar.visibility = View.INVISIBLE
+            }
+        })
     }
 }

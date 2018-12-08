@@ -27,4 +27,10 @@ class ColorSeekBar(context: Context, attrs: AttributeSet) : AppCompatSeekBar(con
         thumbTintList = color
         progressTintList = color
     }
+
+    var defaultColor: Int = Color.BLACK
+        set(value) {
+            setColor(value)
+            field = value
+        }
 }
